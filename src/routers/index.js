@@ -29,6 +29,14 @@ const routes = [
                 }
             },
             {
+                path: prefix + '/banner',
+                name: 'banner',
+                component: () => import('../views/Banner.vue'),
+                meta: {
+                    title: '轮播图管理',
+                }
+            },
+            {
                 path: prefix + '/aomen-lottery-records',
                 name: 'aomen-lottery-records',
                 component: () => import('../views/AomenLotteryRecords.vue'),

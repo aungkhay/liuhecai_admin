@@ -73,6 +73,12 @@ const drawerItems = ref([
         routeName: 'dashboard', 
         isSelected: false,
     },
+    {
+        title: '轮播图管理',
+        icon: 'mdi-image-multiple',
+        routeName: 'banner',
+        isSelected: false,
+    },
     { 
         title: '澳门开奖记录', 
         icon: 'mdi-view-list', 

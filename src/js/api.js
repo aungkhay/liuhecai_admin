@@ -1,6 +1,5 @@
 const prefix = '/api';
 import { useUserStore } from "../stores/user";
-import { useZodiacStore } from "../stores/zodiac";
 import API from "./http";
 
 export const GET_RECAPTCHA = async function () {
@@ -43,6 +42,23 @@ export const LOGOUT = async function () {
     }
 
     return res;
+}
+
+export const BANNERS = async function () {
+    return await API.get(`${prefix}/banners`);
+}
+
+export const CREATE_BANNER = async function (formData) {
+    const config = {
+        method: 'post',
+        url: prefix + '/banners/upload',
+        data: formData
+    }
+    return API(config);
+}
+
+export const DELETE_BANNER = async function (id) {
+    return await API.post(`${prefix}/banners/${id}/delete`);
 }
 
 export const LOTTERY_RECORDS = async function (page = 1, perPage = 10, lottery_type = 'aomen') {

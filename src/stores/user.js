@@ -4,6 +4,7 @@ export const useUserStore = defineStore('user', {
     state: () => ({
         token: localStorage.getItem('_token_') ?? '',
         isLoggedIn: localStorage.getItem('_token_') ? true : false,
+		filePath: 'http://127.0.0.1:2590',
         profile: {},
         barTitle: 'Domain',
         isDrawerOpen: 1,
@@ -62,6 +63,8 @@ export const useUserStore = defineStore('user', {
     },
     
     getters: {
-
+		getFilePath: (state) => {
+			return state.filePath;
+		}
     }
 });
