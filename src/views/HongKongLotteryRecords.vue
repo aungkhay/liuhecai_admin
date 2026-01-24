@@ -209,7 +209,7 @@ const zodiacMap = {
     'pig': '猪'
 };
 
-const lotteryType = ref('aomen');
+const lotteryType = ref('hongkong');
 
 const formatedYears = computed(() => {
     const arr = [];

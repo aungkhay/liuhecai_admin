@@ -80,9 +80,27 @@ const drawerItems = ref([
         isSelected: false,
     },
     { 
+        title: '平台开奖记录', 
+        icon: 'mdi-view-list', 
+        routeName: 'platform-lottery-records', 
+        isSelected: false,
+    },
+    { 
         title: '澳门开奖记录', 
         icon: 'mdi-view-list', 
         routeName: 'aomen-lottery-records', 
+        isSelected: false,
+    },
+    { 
+        title: '香港开奖记录', 
+        icon: 'mdi-view-list', 
+        routeName: 'hongkong-lottery-records', 
+        isSelected: false,
+    },
+    { 
+        title: '结果猜测', 
+        icon: 'mdi-view-list', 
+        routeName: 'result-guess', 
         isSelected: false,
     },
 ]);

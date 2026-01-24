@@ -10,7 +10,7 @@
 import { computed, onMounted, watch } from 'vue';
 import { useUserStore } from './stores/user';
 import { useRoute } from 'vue-router';
-import { PROFILE } from './js/api';
+import { PROFILE, CURRENT_YEAR } from './js/api';
 
 const userStore = useUserStore();
 const route = useRoute();
@@ -31,6 +31,7 @@ onMounted(() => {
 
 	if (isLoggedIn.value) {
 		PROFILE();
+		CURRENT_YEAR();
 	}
 })
 </script>

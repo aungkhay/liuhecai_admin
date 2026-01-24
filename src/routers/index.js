@@ -37,11 +37,35 @@ const routes = [
                 }
             },
             {
-                path: prefix + '/aomen-lottery-records',
+                path: prefix + '/lottery-records/aomen',
                 name: 'aomen-lottery-records',
                 component: () => import('../views/AomenLotteryRecords.vue'),
                 meta: {
                     title: '澳门开奖记录',
+                }
+            },
+            {
+                path: prefix + '/lottery-records/hongkong',
+                name: 'hongkong-lottery-records',
+                component: () => import('../views/HongKongLotteryRecords.vue'),
+                meta: {
+                    title: '香港开奖记录',
+                }
+            },
+            {
+                path: prefix + '/lottery-records/platform',
+                name: 'platform-lottery-records',
+                component: () => import('../views/PlatformLotteryRecords.vue'),
+                meta: {
+                    title: '平台开奖记录',
+                }
+            },
+            {
+                path: prefix + '/result-guess',
+                name: 'result-guess',
+                component: () => import('../views/ResultGuess.vue'),
+                meta: {
+                    title: '结果猜测',
                 }
             },
         ]

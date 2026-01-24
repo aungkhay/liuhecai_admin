@@ -95,9 +95,67 @@ export const useZodiacStore = defineStore('zodiac', {
             { id: 47, num: "47", wuxing: "火", color: "blue", old_even: "odd" },
             { id: 48, num: "48", wuxing: "火", color: "blue", old_even: "even" },
             { id: 49, num: "49", wuxing: "土", color: "green", old_even: "odd" }
+        ],
+        xAttributes: [
+            { attribute_name: "家禽", zodiacs: ["牛","马","羊","鸡","狗","猪"] },
+            { attribute_name: "野兽", zodiacs: ["鼠","虎","兔","龙","蛇","猴"] },
+            { attribute_name: "吉美", zodiacs: ["兔","龙","蛇","马","羊","鸡"] },
+            { attribute_name: "凶丑", zodiacs: ["鼠","牛","虎","猴","狗","猪"] },
+            { attribute_name: "阴肖", zodiacs: ["鼠","龙","蛇","马","狗","猪"] },
+            { attribute_name: "阳肖", zodiacs: ["牛","虎","兔","羊","猴","鸡"] },
+            { attribute_name: "单笔", zodiacs: ["鼠","龙","马","蛇","鸡","猪"] },
+            { attribute_name: "双笔", zodiacs: ["虎","猴","狗","兔","羊","牛"] },
+            { attribute_name: "天肖", zodiacs: ["兔","马","猴","猪","牛","龙"] },
+            { attribute_name: "地肖", zodiacs: ["蛇","羊","鸡","狗","鼠","虎"] },
+            { attribute_name: "白肖", zodiacs: ["鼠","牛","虎","鸡","狗","猪"] },
+            { attribute_name: "黑肖", zodiacs: ["兔","龙","蛇","马","羊","猴"] },
+            { attribute_name: "女肖", zodiacs: ["兔","蛇","羊","鸡","猪"] },
+            { attribute_name: "男肖", zodiacs: ["鼠","牛","虎","龙","马","猴","狗"] },
+            { attribute_name: "琴肖", zodiacs: ["兔","蛇","鸡"] },
+            { attribute_name: "棋肖", zodiacs: ["鼠","牛","狗"] },
+            { attribute_name: "书肖", zodiacs: ["虎","龙","马"] },
+            { attribute_name: "画肖", zodiacs: ["羊","猴","猪"] },
+            { attribute_name: "五福", zodiacs: ["鼠","虎","兔","蛇","猴","龙"] },
+            { attribute_name: "红肖", zodiacs: ["马","兔","鼠","鸡"] },
+            { attribute_name: "蓝肖", zodiacs: ["蛇","虎","猪","猴"] },
+            { attribute_name: "绿肖", zodiacs: ["羊","龙","牛","狗"] },
+            { attribute_name: "文肖", zodiacs: ["鼠","兔","龙","羊","鸡","猪"] },
+            { attribute_name: "武肖", zodiacs: ["牛","虎","蛇","马","猴","狗"] },
+            { attribute_name: "前肖", zodiacs: ["鼠","牛","虎","兔","龙","蛇"] },
+            { attribute_name: "后肖", zodiacs: ["马","羊","猴","鸡","狗","猪"] },
+            { attribute_name: "吴国", zodiacs: ["虎","兔","龙","蛇"] },
+            { attribute_name: "蜀国", zodiacs: ["马","羊","猴","鸡"] },
+            { attribute_name: "魏国", zodiacs: ["鼠","牛","狗","猪"] },
+            { attribute_name: "独肖", zodiacs: ["鼠","牛","虎","兔","马","羊"] },
+            { attribute_name: "合肖", zodiacs: ["龙","蛇","猴","鸡","狗","猪"] },
+            { attribute_name: "春肖", zodiacs: ["兔","虎","龙"] },
+            { attribute_name: "夏肖", zodiacs: ["羊","蛇","马"] },
+            { attribute_name: "秋肖", zodiacs: ["狗","鸡","猴"] },
+            { attribute_name: "冬肖", zodiacs: ["猪","牛","鼠"] },
+            { attribute_name: "胆大", zodiacs: ["牛","虎","马","猴","狗","猪"] },
+            { attribute_name: "胆小", zodiacs: ["鼠","兔","龙","蛇","羊","鸡"] },
+            { attribute_name: "三合1", zodiacs: ["鼠","龙","猴"] },
+            { attribute_name: "三合2", zodiacs: ["牛","蛇","鸡"] },
+            { attribute_name: "三合3", zodiacs: ["虎","马","狗"] },
+            { attribute_name: "三合4", zodiacs: ["兔","羊","猪"] },
+            { attribute_name: "六合1", zodiacs: ["鼠","牛"] },
+            { attribute_name: "六合2", zodiacs: ["龙","鸡"] },
+            { attribute_name: "六合3", zodiacs: ["虎","猪"] },
+            { attribute_name: "六合4", zodiacs: ["蛇","猴"] },
+            { attribute_name: "六合5", zodiacs: ["兔","狗"] },
+            { attribute_name: "六合6", zodiacs: ["马","羊"] },
+            { attribute_name: "大肖", zodiacs: ["牛","虎","马","羊","狗","猪"] },
+            { attribute_name: "小肖", zodiacs: ["鼠","兔","龙","蛇","猴","鸡"] },
+            { attribute_name: "1号汉奸汪精卫", zodiacs: ["猪","狗","鼠"] },
+            { attribute_name: "2号汉奸陈公博", zodiacs: ["牛","虎","蛇"] },
+            { attribute_name: "3号汉奸周佛海", zodiacs: ["马","兔","羊"] },
+            { attribute_name: "4号汉奸梁鸿志", zodiacs: ["龙","鸡","猴"] }
         ]
     }),
     actions: {
+        setCurrentYear(year) {
+            this.currentYear = year;
+        }
     },
     getters: {
         getNumbers: (state) => state.xNumbers,
@@ -126,6 +184,7 @@ export const useZodiacStore = defineStore('zodiac', {
                 odd: state.xNumbers.filter(n => n.old_even == 'odd').map(n => { return { num: n.num, color: n.color } }),
                 even: state.xNumbers.filter(n => n.old_even == 'even').map(n => { return { num: n.num, color: n.color } }),
             }
-        }
+        },
+        getXAttributes: (state) => state.xAttributes,
     }
 })

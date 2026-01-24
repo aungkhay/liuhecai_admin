@@ -1,5 +1,6 @@
 const prefix = '/api';
 import { useUserStore } from "../stores/user";
+import { useZodiacStore } from "../stores/zodiac";
 import API from "./http";
 
 export const GET_RECAPTCHA = async function () {
@@ -44,6 +45,14 @@ export const LOGOUT = async function () {
     return res;
 }
 
+export const CURRENT_YEAR = async function () {
+    const res = await API.get(`${prefix}/current-year`);
+    if (res.code == 1000) {
+        const zodiacStore = useZodiacStore();
+        zodiacStore.setCurrentYear(res.data.year);
+    }
+}
+
 export const BANNERS = async function () {
     return await API.get(`${prefix}/banners`);
 }
@@ -81,4 +90,25 @@ export const DELETE_LOTTERY_RECORD = async function (id, lottery_type = 'aomen')
 
 export const UPDATE_LOTTERY_RECORD = async function (id, data) {
     return await API.post(`${prefix}/lottery-records/${id}/update`, data);
+}
+
+export const RESULT_GUESSES = async function (page = 1, perPage = 10) {
+    return await API.get(`${prefix}/result-guesses`, {
+        params: {
+            page: page,
+            perPage: perPage,
+        }
+    });
+}
+
+export const CREATE_RESULT_GUESS = async function (data) {
+    return await API.post(`${prefix}/result-guesses/create`, data);
+}
+
+export const UPDATE_RESULT_GUESS = async function (id, data) {
+    return await API.post(`${prefix}/result-guesses/${id}/update`, data);
+}
+
+export const DELETE_RESULT_GUESS = async function (id) {
+    return await API.post(`${prefix}/result-guesses/${id}/delete`);
 }
