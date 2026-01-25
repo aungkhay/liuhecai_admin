@@ -65,7 +65,7 @@ const routes = [
                 name: 'result-guess',
                 component: () => import('../views/ResultGuess.vue'),
                 meta: {
-                    title: '结果猜测',
+                    title: '发什么开什么',
                 }
             },
         ]

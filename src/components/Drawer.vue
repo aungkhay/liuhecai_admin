@@ -9,21 +9,41 @@
         >
             <v-list-item style="background-color: var(--list-group-active);" height="64" title="管理面板"></v-list-item>
 
-            <v-list-item
-                v-for="(item, i) in drawerItems"
-                :key="i"
-                :value="item.title"
-                :title="item.title"
-                color="primary"
-                @click="changeRoute(i)"
-                :active="item.isSelected"
-                :height="50"
-            >
-                <template v-slot:prepend>
-                    <v-icon :icon="item.icon"></v-icon>
-                </template>
-                <v-list-item-title v-text="item.text"></v-list-item-title>
-            </v-list-item>
+            <v-list nav slim :opened="open">
+                <div v-for="(item, index) in drawerItems" :key="index">
+                    <v-list-group 
+                        :value="item.title"
+                        :collapse-icon="item.children?.length > 0 ? 'mdi-chevron-up' : null"
+                        :expand-icon="item.children?.length > 0 ? 'mdi-chevron-down' : null"
+                    >
+                        <template v-slot:activator="{ props }">
+                            <v-list-item 
+                                v-bind="props" 
+                                :title="item.title" 
+                                :value="item.title"
+                                :prepend-icon="item.icon"
+                                :active="item.isSelected"
+                                color="primary"
+                                :style="`background-color: ${item.isSelected ? 'var(--list-group-active)' : ''}`"
+                                @click="item.children ? {} : changeRoute(index, -1)"
+                                :height="50"
+                            ></v-list-item>
+                        </template>
+
+                        <div v-for="(child, i) in item?.children" :key="i">
+                            <v-list-item
+                                :title="child.title"
+                                :value="child.title"
+                                :active="child.isSelected"
+                                color="primary"
+                                @click="changeRoute(index, i)"
+                                :height="50"
+                            ></v-list-item>
+                        </div>
+                        
+                    </v-list-group>
+                </div>
+            </v-list>
 
             <template v-slot:append>
                 <div class="pa-2">
@@ -66,6 +86,7 @@ const currentRoute = computed(() => userStore.currentRoute);
 const dialog = ref(false);
 const drawer = ref(null);
 const isLoading = ref(false);
+const open = ref([]);
 const drawerItems = ref([
     { 
         title: '仪表盘', 
@@ -79,57 +100,97 @@ const drawerItems = ref([
         routeName: 'banner',
         isSelected: false,
     },
-    { 
-        title: '平台开奖记录', 
-        icon: 'mdi-view-list', 
-        routeName: 'platform-lottery-records', 
+    {
+        title: '开奖记录',
+        icon: 'mdi-view-list',
         isSelected: false,
-    },
-    { 
-        title: '澳门开奖记录', 
-        icon: 'mdi-view-list', 
-        routeName: 'aomen-lottery-records', 
-        isSelected: false,
-    },
-    { 
-        title: '香港开奖记录', 
-        icon: 'mdi-view-list', 
-        routeName: 'hongkong-lottery-records', 
-        isSelected: false,
+        children: [
+            { 
+                title: '平台开奖记录', 
+                icon: 'mdi-view-list', 
+                routeName: 'platform-lottery-records', 
+                isSelected: false,
+            },
+            { 
+                title: '澳门开奖记录', 
+                icon: 'mdi-view-list', 
+                routeName: 'aomen-lottery-records', 
+                isSelected: false,
+            },
+            { 
+                title: '香港开奖记录', 
+                icon: 'mdi-view-list', 
+                routeName: 'hongkong-lottery-records', 
+                isSelected: false,
+            },
+        ]
     },
     { 
         title: '结果猜测', 
         icon: 'mdi-view-list', 
-        routeName: 'result-guess', 
         isSelected: false,
+        children: [
+            {
+                title: '发什么开什么',
+                icon: 'mdi-circle-small',
+                routeName: 'result-guess',
+                isSelected: false,
+            }
+        ],
     },
 ]);
 
-function setDrawerActive(index) {
+function setDrawerActive(parentIndex, childIndex) {
     drawerItems.value = drawerItems.value.map((item) => {
         let parent = item;
         parent.isSelected = false;
+
+        if (parent.children) {
+            let children = parent.children;
+            children = children.map(child => {
+                child.isSelected = false;
+                return child;
+            });
+            parent.children = children;
+        }
         return parent;
     });
-    drawerItems.value[index].isSelected = true;
+
+    drawerItems.value[parentIndex].isSelected = true;
+    if (childIndex >= 0) {
+        drawerItems.value[parentIndex].children[childIndex].isSelected = true;
+    }
+
+    open.value = [drawerItems.value[parentIndex].title];
 }
 
-function changeRoute(index) {
+function changeRoute(parentIndex, childIndex) {
     if (xs.value) {
-        userStore.closeDrawer()
+        closeDrawer();
     }
-    router.push({ name: drawerItems.value[index].routeName })
-    setDrawerActive(index);
+
+    if (childIndex >= 0) {
+        router.push({ name: drawerItems.value[parentIndex].children[childIndex].routeName })
+    } else {
+        router.push({ name: drawerItems.value[parentIndex].routeName })
+    }
+    setDrawerActive(parentIndex, childIndex);
 }
 
 watch(
     () => currentRoute.value,
     () => {
         for (let i = 0; i < drawerItems.value.length; i++) {
-            const item = drawerItems.value[i];
-            if(item.routeName && item.routeName == currentRoute.value) {
+            const parent = drawerItems.value[i];
+            if(parent.routeName && parent.routeName == currentRoute.value) {
                 setDrawerActive(i, -1);
                 break;
+            } else if(parent.children) {
+                const childIndex = parent.children.findIndex((item) => item.routeName == currentRoute.value);
+                if(childIndex >= 0) {
+                    setDrawerActive(i, childIndex);
+                    break;
+                }
             }
         }
     },
@@ -145,3 +206,9 @@ async function logout() {
     }, 2000);
 }
 </script>
+
+<style scoped>
+.v-list-group__items .v-list-item {
+  padding-inline-start: 16px !important;
+}
+</style>
