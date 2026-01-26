@@ -142,6 +142,12 @@ const drawerItems = ref([
                 routeName: 'yi-qi-nei-mu',
                 isSelected: false,
             },
+            {
+                title: '投资平特',
+                icon: 'mdi-circle-small',
+                routeName: 'tou-zi-ping-te',
+                isSelected: false,
+            },
         ],
     },
 ]);

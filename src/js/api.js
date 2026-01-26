@@ -70,6 +70,10 @@ export const DELETE_BANNER = async function (id) {
     return await API.post(`${prefix}/banners/${id}/delete`);
 }
 
+export const GET_PLATFORM_LAST_BATCH_NUMBER = async function () {
+    return await API.get(`${prefix}/lottery-records/last-batch-number`);
+}
+
 export const LOTTERY_RECORDS = async function (page = 1, perPage = 10, lottery_type = 'aomen') {
     return await API.get(`${prefix}/lottery-records`, {
         params: {
@@ -127,4 +131,29 @@ export const UPDATE_WU_XIAO = async function (data) {
 
 export const UPDATE_SAN_XIAO = async function (data) {
     return await API.post(`${prefix}/configs/update-san-xiao`, data);
+}
+
+export const GET_LAST_BATCH_NUMBER = async function () {
+    return await API.get(`${prefix}/tou-zi-ping-te/last-batch-number`);
+}
+
+export const GET_TOUZI_PINGTE = async function (page, perPage) {
+    return await API.get(`${prefix}/tou-zi-ping-te`, {
+        params: {
+            page: page,
+            perPage: perPage,
+        }
+    });
+}
+
+export const CREATE_TOUZI_PINGTE = async function (data) {
+    return await API.post(`${prefix}/tou-zi-ping-te/create`, data);
+}
+
+export const UPDATE_TOUZI_PINGTE = async function (id, data) {
+    return await API.post(`${prefix}/tou-zi-ping-te/${id}/update`, data);
+}
+
+export const DELETE_TOUZI_PINGTE = async function (id) {
+    return await API.post(`${prefix}/tou-zi-ping-te/${id}/delete`);
 }

@@ -76,6 +76,14 @@ const routes = [
                     title: '一期内幕',
                 }
             },
+            {
+                path: prefix + '/tou-zi-ping-te',
+                name: 'tou-zi-ping-te',
+                component: () => import('../views/TouziPingte.vue'),
+                meta: {
+                    title: '投资平特',
+                }
+            },
         ]
     }
 ];

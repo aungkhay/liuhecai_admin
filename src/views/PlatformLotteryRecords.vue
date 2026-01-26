@@ -80,6 +80,7 @@
                         :items="formatedYears"
                         item-title="title"
                         item-value="key"
+                        variant="outlined"
                     ></v-select>
                     <v-row no-gutters>
                         <v-col cols="6" class="pr-1">
@@ -92,6 +93,7 @@
                                 :error-messages="v$.batch_number.$errors.map(e => e.$message)"
                                 @input="v$.batch_number.$touch"
                                 @blur="v$.batch_number.$touch"
+                                readonly
                             ></v-text-field>
                         </v-col>
                         <v-col cols="6" class="pl-1">
@@ -183,11 +185,13 @@ import { onMounted, ref, computed, watch } from "vue";
 import { useZodiacStore } from "../stores/zodiac";
 import { useVuelidate } from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
-import { LOTTERY_RECORDS, CREATE_LOTTERY_RECORD, UPDATE_LOTTERY_RECORD, DELETE_LOTTERY_RECORD } from "../js/api";
+import { LOTTERY_RECORDS, CREATE_LOTTERY_RECORD, UPDATE_LOTTERY_RECORD, DELETE_LOTTERY_RECORD, GET_PLATFORM_LAST_BATCH_NUMBER } from "../js/api";
 import { orderZodiac } from "../js/common";
 import { useRoute } from "vue-router";
+import { useToast } from "vue-toastification";
 
 const route = useRoute();
+const toast = useToast();
 const zodiacStore = useZodiacStore();
 const numbers = computed(() => zodiacStore.getNumbers);
 const years = computed(() => zodiacStore.getXYear);
@@ -210,6 +214,7 @@ const zodiacMap = {
 };
 
 const lotteryType = ref('platform');
+const lastBatchNumber = ref(0);
 
 const formatedYears = computed(() => {
     const arr = [];
@@ -278,26 +283,24 @@ const getZodiacName = (num_desc) => {
 }
 
 const resetForm = () => {
-    obj.value = {
-        year: currentYear.value,
-        lottery_type: lotteryType.value,
-        batch_number: "",
-        num1: null,
-        num2: null,
-        num3: null,
-        num4: null,
-        num5: null,
-        num6: null,
-        num7: null,
-        draw_date: "",
-        num1_desc: "",
-        num2_desc: "",
-        num3_desc: "",
-        num4_desc: "",
-        num5_desc: "",
-        num6_desc: "",
-        num7_desc: "",
-    };
+    obj.value.year = currentYear.value;
+    obj.value.lottery_type = lotteryType.value;
+    obj.value.batch_number = lastBatchNumber.value;
+    obj.value.num1 = null;
+    obj.value.num2 = null;
+    obj.value.num3 = null;
+    obj.value.num4 = null;
+    obj.value.num5 = null;
+    obj.value.num6 = null;
+    obj.value.num7 = null;
+    obj.value.draw_date = "";
+    obj.value.num1_desc = "";
+    obj.value.num2_desc = "";
+    obj.value.num3_desc = "";
+    obj.value.num4_desc = "";
+    obj.value.num5_desc = "";
+    obj.value.num6_desc = "";
+    obj.value.num7_desc = "";
     v$.value.$reset();
     selectedId.value = 0;
     selectedRecord.value = null;
@@ -398,12 +401,15 @@ const saveRecord = async () => {
         }
     }
 
-
     const res = selectedId.value == 0 ? await CREATE_LOTTERY_RECORD(obj.value) : await UPDATE_LOTTERY_RECORD(selectedId.value, obj.value);
     if (res.code == 1000) {
+        await fetchLastBatchNumber();
         dialog.value = false;
         await getRecords();
         resetForm();
+        toast.success(res.message);
+    } else {
+        toast.error(res.message);
     }
     isSaving.value = false;
 }
@@ -425,7 +431,17 @@ const deleteRecord = async () => {
     isDeleting.value = false;
 }
 
+const fetchLastBatchNumber = async () => {
+    const res = await GET_PLATFORM_LAST_BATCH_NUMBER();
+    if (res.code == 1000) {
+        const last = Number(res.data.last_batch_number);
+        lastBatchNumber.value = last;
+        obj.value.batch_number = last;
+    }
+}
+
 onMounted(() => {
+    fetchLastBatchNumber();
     getRecords();
 });
 </script>

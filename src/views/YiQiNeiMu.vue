@@ -3,7 +3,7 @@
         <v-table>
             <thead>
                 <tr>
-                    <th>消</th>
+                    <th>肖</th>
                     <th>码</th>
                     <th>操作</th>
                 </tr>
