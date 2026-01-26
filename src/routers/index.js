@@ -68,6 +68,14 @@ const routes = [
                     title: '发什么开什么',
                 }
             },
+            {
+                path: prefix + '/yi-qi-nei-mu',
+                name: 'yi-qi-nei-mu',
+                component: () => import('../views/YiQiNeiMu.vue'),
+                meta: {
+                    title: '一期内幕',
+                }
+            },
         ]
     }
 ];

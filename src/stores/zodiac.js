@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { orderZodiac } from '../js/common';
 
 export const useZodiacStore = defineStore('zodiac', {
     state: () => ({
@@ -155,13 +156,39 @@ export const useZodiacStore = defineStore('zodiac', {
     actions: {
         setCurrentYear(year) {
             this.currentYear = year;
-        }
+        },
+
+        orderZodiac() {
+            const zodiacList = [];
+            const currentZodiac = this.xZodiacs.find(z => z.key == this.xYear[this.currentYear]);
+            const arr = orderZodiac(currentZodiac.id);
+            for (let i = 0; i < arr.length; i++) {
+                const zodiacId = arr[i];
+                const zodiac = this.xZodiacs.find(z => z.id == zodiacId);
+                const comparison = this.xComparisons.find(c => c.id == i + 1);
+                const obj = {
+                    id: zodiac.id,
+                    name: zodiac.name,
+                    key: zodiac.key,
+                    numbers: [],
+                }
+                comparison.numbers.forEach(num => {
+                    const index = this.xNumbers.findIndex(n => n.id === num);
+                    if (index !== -1) {
+                        obj.numbers.push(this.xNumbers[index]);
+                    }
+                });
+                zodiacList.push(obj);
+            }
+            this.zodiacPerYear = { [`${this.currentYear}`]: zodiacList }
+        },
     },
     getters: {
         getNumbers: (state) => state.xNumbers,
         getZodiacs: (state) => state.xZodiacs,
         getComparisons: (state) => state.xComparisons,
         getCurrentYear: (state) => state.currentYear,
+        getOrderedZodiacs: (state) => state.zodiacPerYear[state.currentYear],
         getXYear: (state) => state.xYear,
         getWuXingNumbers: (state) => {
             return {

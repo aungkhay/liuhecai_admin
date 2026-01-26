@@ -112,3 +112,19 @@ export const UPDATE_RESULT_GUESS = async function (id, data) {
 export const DELETE_RESULT_GUESS = async function (id) {
     return await API.post(`${prefix}/result-guesses/${id}/delete`);
 }
+
+export const GET_XIAO_MA = async function () {
+    return await API.get(`${prefix}/configs/xiao-ma`);
+}
+
+export const UPDATE_QI_XIAO = async function (data) {
+    return await API.post(`${prefix}/configs/update-qi-xiao`, data);
+}
+
+export const UPDATE_WU_XIAO = async function (data) {
+    return await API.post(`${prefix}/configs/update-wu-xiao`, data);
+}
+
+export const UPDATE_SAN_XIAO = async function (data) {
+    return await API.post(`${prefix}/configs/update-san-xiao`, data);
+}

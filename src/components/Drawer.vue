@@ -135,7 +135,13 @@ const drawerItems = ref([
                 icon: 'mdi-circle-small',
                 routeName: 'result-guess',
                 isSelected: false,
-            }
+            },
+            {
+                title: '一期内幕',
+                icon: 'mdi-circle-small',
+                routeName: 'yi-qi-nei-mu',
+                isSelected: false,
+            },
         ],
     },
 ]);
