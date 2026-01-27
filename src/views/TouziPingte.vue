@@ -25,12 +25,27 @@
                     <td>{{ record.is_finished ? '已完成' : '未完成' }}</td>
                     <td>{{ $filters.formatDate(record.createdAt) }}</td>
                     <td>
-                        <!-- <v-btn size="small" color="success" class="mr-2" @click="editRecord(record)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn> -->
                         <v-btn v-if="!record.is_finished" size="small" color="error" @click="deleteRecord(record.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
                     </td>
                 </tr>
             </tbody>
         </v-table>
+
+        <div class="d-flex justify-center mt-5">
+            <v-pagination
+                v-model="page"
+                :length="totalPage"
+                :total-visible="7"
+                color="grey"
+                rounded="circle"
+                density="compact"
+                active-color="primary"
+                :show-first-last-page="true"
+                @first="goToFirst"
+                @last="goToLast"
+                @update:model-value="switchPage"
+            ></v-pagination>
+        </div>
 
         <v-dialog 
             v-model="dialog"
@@ -157,14 +172,16 @@ const saveRecord = async () => {
     isSaving.value = false;
 }
 
-const editRecord = (record) => {
-    selectedId.value = record.id;
-    obj.value.year = record.year;
-    obj.value.batch_start = record.batch_start;
-    obj.value.batch_end = record.batch_end;
-    obj.value.zodiac_name = record.zodiac_name;
-    v$.value.$reset();
-    dialog.value = true;
+const goToFirst = () => {
+    page.value = 1;
+    getRecords();
+}
+const goToLast = () => {
+    page.value = totalPage.value;
+    getRecords();
+}
+const switchPage = () => {
+    getRecords();
 }
 
 onMounted(() => {

@@ -32,6 +32,22 @@
             </tbody>
         </v-table>
 
+        <div class="d-flex justify-center mt-5">
+            <v-pagination
+                v-model="page"
+                :length="totalPage"
+                :total-visible="7"
+                color="grey"
+                rounded="circle"
+                density="compact"
+                active-color="primary"
+                :show-first-last-page="true"
+                @first="goToFirst"
+                @last="goToLast"
+                @update:model-value="switchPage"
+            ></v-pagination>
+        </div>
+
         <v-dialog 
             v-model="dialog"
             width="350"
@@ -92,7 +108,7 @@ import { onMounted, ref } from 'vue';
 import { useZodiacStore } from '../stores/zodiac';
 import { useVuelidate } from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
-import { CREATE_RESULT_GUESS, DELETE_RESULT_GUESS, RESULT_GUESSES, UPDATE_RESULT_GUESS } from '../js/api';
+import { CREATE_RESULT_GUESS, DELETE_RESULT_GUESS, RESULT_GUESSES, UPDATE_RESULT_GUESS, GET_PLATFORM_LAST_BATCH_NUMBER } from '../js/api';
 import { useToast } from 'vue-toastification';
 
 const zodiacStore = useZodiacStore();
@@ -110,9 +126,10 @@ const deleteDialog = ref(false);
 const isSaving = ref(false);
 const isDeleting = ref(false);
 const selectedId = ref(0);
+const lastBatchNumber = ref(0);
 
 const obj = ref({
-    batch_number: results.value.length > 0 ? Number(results.value[0].batch_number) + 1 : 1,
+    batch_number: lastBatchNumber.value,
     zodiac_attr: '',
 });
 const rules = ref({
@@ -123,7 +140,7 @@ const v$ = useVuelidate(rules.value, obj.value);
 
 function resetForm() {
     selectedId.value = 0;
-    obj.value.batch_number = results.value.length > 0 ? Number(results.value[0].batch_number) + 1 : 1;
+    obj.value.batch_number = lastBatchNumber.value;
     obj.value.zodiac_attr = '';
     v$.value.$reset();
 }
@@ -134,7 +151,6 @@ const fetchResults = async () => {
         results.value = res.data.results;
         total.value = res.data.meta.total;
         totalPage.value = res.data.meta.totalPage;
-        obj.value.batch_number = results.value.length > 0 ? Number(results.value[0].batch_number) + 1 : 1;
     }
 }
 
@@ -159,7 +175,7 @@ const saveResult = async () => {
         dialog.value = false;
         resetForm();
         fetchResults();
-
+        fetchLastBatchNumber();
         toast.success(res.message);
     } else {
         toast.error(res.message);
@@ -180,7 +196,7 @@ const deleteRecord = async () => {
     if (res.code === 1000) {
         deleteDialog.value = false;
         fetchResults();
-
+        fetchLastBatchNumber();
         toast.success(res.message);
     } else {
         toast.error(res.message);
@@ -188,7 +204,29 @@ const deleteRecord = async () => {
     isDeleting.value = false;
 }
 
+const goToFirst = () => {
+    page.value = 1;
+    fetchResults();
+}
+const goToLast = () => {
+    page.value = totalPage.value;
+    fetchResults();
+}
+const switchPage = () => {
+    fetchResults();
+}
+
+const fetchLastBatchNumber = async () => {
+    const res = await GET_PLATFORM_LAST_BATCH_NUMBER();
+    if (res.code == 1000) {
+        const last = Number(res.data.last_batch_number);
+        lastBatchNumber.value = last;
+        obj.value.batch_number = last;
+    }
+}
+
 onMounted(() => {
+    fetchLastBatchNumber();
     fetchResults();
 });
 </script>

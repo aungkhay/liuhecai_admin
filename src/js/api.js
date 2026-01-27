@@ -157,3 +157,24 @@ export const UPDATE_TOUZI_PINGTE = async function (id, data) {
 export const DELETE_TOUZI_PINGTE = async function (id) {
     return await API.post(`${prefix}/tou-zi-ping-te/${id}/delete`);
 }
+
+export const GET_DOUBLE_COLOR = async function (page, perPage) {
+    return await API.get(`${prefix}/double-color`, {
+        params: {
+            page: page,
+            perPage: perPage,
+        }
+    });
+}
+
+export const CREATE_DOUBLE_COLOR = async function (data) {
+    return await API.post(`${prefix}/double-color/create`, data);
+}
+
+export const UPDATE_DOUBLE_COLOR = async function (id, data) {
+    return await API.post(`${prefix}/double-color/${id}/update`, data);
+}
+
+export const DELETE_DOUBLE_COLOR = async function (id) {
+    return await API.post(`${prefix}/double-color/${id}/delete`);
+}

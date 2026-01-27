@@ -148,6 +148,12 @@ const drawerItems = ref([
                 routeName: 'tou-zi-ping-te',
                 isSelected: false,
             },
+            {
+                title: '大神双波',
+                icon: 'mdi-circle-small',
+                routeName: 'double-color',
+                isSelected: false,
+            },
         ],
     },
 ]);

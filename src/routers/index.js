@@ -84,6 +84,14 @@ const routes = [
                     title: '投资平特',
                 }
             },
+            {
+                path: prefix + '/double-color',
+                name: 'double-color',
+                component: () => import('../views/DoubleColor.vue'),
+                meta: {
+                    title: '大神双波',
+                }
+            },
         ]
     }
 ];
