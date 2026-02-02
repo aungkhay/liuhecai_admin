@@ -1,0 +1,38 @@
+.bet-item {
+    border: 1px solid transparent;
+}
+
+.bet-item.active {
+    border: 1px solid rgb(var(--v-theme-primary), 0.5);
+    background-color: rgb(var(--v-theme-primary), 0.1);
+}
+
+.bet-item:hover {
+    border: 1px solid rgb(var(--v-theme-primary), 0.5);
+    background-color: rgb(var(--v-theme-primary), 0.1);
+}
+
+.circle-wrapper {
+    position: relative;
+    width: 30px;
+    height: 30px;
+}
+
+.circle-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+    z-index: 2;
+}
+
+.bet-input {
+    max-width: 100px;
+    border: 1px solid #d3d3d3;
+    border-radius: 4px;
+    outline: none;
+    padding: 0 5px;
+}

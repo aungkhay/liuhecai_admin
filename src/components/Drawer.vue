@@ -156,6 +156,12 @@ const drawerItems = ref([
             },
         ],
     },
+    {
+        title: '下注',
+        icon: 'mdi-cash-multiple',
+        routeName: 'do-bet',
+        isSelected: false,
+    }
 ]);
 
 function setDrawerActive(parentIndex, childIndex) {

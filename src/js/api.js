@@ -178,3 +178,11 @@ export const UPDATE_DOUBLE_COLOR = async function (id, data) {
 export const DELETE_DOUBLE_COLOR = async function (id) {
     return await API.post(`${prefix}/double-color/${id}/delete`);
 }
+
+export const GET_BET_CATEGORIES = async () => {
+    return await API.get(`${prefix}/bet/categories`);
+}
+
+export const GET_BET_ITEMS = async (subId) => {
+    return await API.get(`${prefix}/bet/items/${subId}`);
+}

@@ -92,6 +92,14 @@ const routes = [
                     title: '大神双波',
                 }
             },
+            {
+                path: prefix + '/do-bet',
+                name: 'do-bet',
+                component: () => import('../views/DoBet.vue'),
+                meta: {
+                    title: '下注',
+                }
+            }
         ]
     }
 ];
