@@ -29,7 +29,10 @@
 import { computed, ref, watch, onMounted } from 'vue';
 import { useZodiacStore } from '../../../stores/zodiac';
 import { combinations } from '../../../js/common';
+import { useCartStore } from '../../../stores/bet';
 
+const cartStore = useCartStore();
+const isAddedToCart = computed(() => cartStore.getAddedToCart);
 const zodiacStore = useZodiacStore();
 const zodiacs = computed(() => zodiacStore.getOrderedZodiacs);
 
@@ -101,6 +104,14 @@ watch(
 onMounted(() => {
     zodiacStore.orderZodiac();
 });
+
+watch(
+    () => isAddedToCart.value,
+    (newVal) => {
+        selectedItems.value = [];
+    },
+    { immediate: true }
+);
 </script>
 
 <style scoped>

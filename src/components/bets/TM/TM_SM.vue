@@ -15,7 +15,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { useCartStore } from '../../../stores/bet';
+
+const cartStore = useCartStore();
+const isAddedToCart = computed(() => cartStore.getAddedToCart);
 
 const props = defineProps({
     items: {
@@ -41,4 +45,12 @@ const toggleItem = (item) => {
     }
     emit('update:selectedItems', selectedItems.value);
 };
+
+watch(
+    () => isAddedToCart.value,
+    (newVal) => {
+        selectedItems.value = [];
+    },
+    { immediate: true }
+)
 </script>

@@ -18,7 +18,10 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { useZodiacStore } from '../../stores/zodiac';
 import { combinations } from '../../js/common';
+import { useCartStore } from '../../stores/bet';
 
+const cartStore = useCartStore();
+const isAddedToCart = computed(() => cartStore.getAddedToCart);
 const zodiacStore = useZodiacStore();
 const numbers = zodiacStore.xNumbers;
 
@@ -65,6 +68,14 @@ watch(
         // Clear selected items when sub changes
         selectedItems.value = [];
         emit('update:selectedItems', selectedItems.value);
+    },
+    { immediate: true }
+);
+
+watch(
+    () => isAddedToCart.value,
+    (newVal) => {
+        selectedItems.value = [];
     },
     { immediate: true }
 );

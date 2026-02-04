@@ -17,6 +17,10 @@
 <script setup>
 import { computed, ref, watch, onMounted } from 'vue';
 import { useZodiacStore } from '../../../stores/zodiac';
+import { useCartStore } from '../../../stores/bet';
+
+const cartStore = useCartStore();
+const isAddedToCart = computed(() => cartStore.getAddedToCart);
 
 const props = defineProps({
     items: {
@@ -41,4 +45,12 @@ const toggleItem = (item) => {
     }
     emit('update:selectedItems', selectedItems.value);
 };
+
+watch(
+    () => isAddedToCart.value,
+    (newVal) => {
+        selectedItems.value = [];
+    },
+    { immediate: true }
+);
 </script>

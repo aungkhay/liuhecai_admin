@@ -15,6 +15,10 @@
 <script setup>
 import { computed, ref, watch, onMounted } from 'vue';
 import { combinations } from '../../../js/common';
+import { useCartStore } from '../../../stores/bet';
+
+const cartStore = useCartStore();
+const isAddedToCart = computed(() => cartStore.getAddedToCart);
 
 const props = defineProps({
     items: {
@@ -53,6 +57,14 @@ watch(
         // Clear selected items when sub changes
         selectedItems.value = [];
         emit('update:selectedItems', selectedItems.value);
+    },
+    { immediate: true }
+);
+
+watch(
+    () => isAddedToCart.value,
+    (newVal) => {
+        selectedItems.value = [];
     },
     { immediate: true }
 );

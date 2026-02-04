@@ -50,9 +50,12 @@
 <script setup>
 import { computed, ref, watch, onMounted } from 'vue';
 import { useZodiacStore } from '../../../stores/zodiac';
+import { useCartStore } from '../../../stores/bet';
 
 const zodiacStore = useZodiacStore();
 const zodiacs = computed(() => zodiacStore.getOrderedZodiacs);
+const cartStore = useCartStore();
+const isAddedToCart = computed(() => cartStore.getAddedToCart);
 
 const props = defineProps({
     items: {
@@ -100,6 +103,14 @@ watch(
         }
         specialItems.value = specials;
         colorItems.value = newItems.filter(i => i.sub_group === '七色波');
+    },
+    { immediate: true }
+);
+
+watch(
+    () => isAddedToCart.value,
+    (newVal) => {
+        selectedItems.value = [];
     },
     { immediate: true }
 );

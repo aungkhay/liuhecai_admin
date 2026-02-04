@@ -61,9 +61,12 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch, computed } from 'vue';
 import { useZodiacStore } from '../../../stores/zodiac';
+import { useCartStore } from '../../../stores/bet';
 
+const cartStore = useCartStore();
+const isAddedToCart = computed(() => cartStore.getAddedToCart);
 const zodiacStore = useZodiacStore();
 const colorNumbers = zodiacStore.getColorNumbers;
 const props = defineProps({
@@ -104,4 +107,12 @@ watch(
     },
     { immediate: true }
 );
+
+watch(
+    () => isAddedToCart.value,
+    (newVal) => {
+        selectedItems.value = [];
+    },
+    { immediate: true }
+)
 </script>
