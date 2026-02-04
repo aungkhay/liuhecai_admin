@@ -31,8 +31,13 @@ const props = defineProps({
     items: {
         type: Array,
         required: true,
-    }
+    },
+    betAmount: {
+        type: Number,
+        required: false,
+    },
 });
+const emit = defineEmits(['update:selectedItems']);
 const selectedItems = ref([]);
 const wuxingMap = {
     '金': 'jin',
@@ -49,10 +54,12 @@ const getImg = (color) => {
 const toggleItem = (item) => {
     const index = selectedItems.value.indexOf(item);
     if (index === -1) {
+        item.betAmount = props.betAmount;
         selectedItems.value.push(item);
     } else {
         selectedItems.value.splice(index, 1);
     }
+    emit('update:selectedItems', selectedItems.value);
 };
 
 watch(

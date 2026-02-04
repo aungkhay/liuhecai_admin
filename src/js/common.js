@@ -25,3 +25,22 @@ export const orderZodiac = (currentId) => {
 
     return result;
 }
+
+export const combinations = (arr, k) => {
+    const result = [];
+
+    function backtrack(start, combo) {
+        if (combo.length === k) {
+            result.push([...combo]);
+            return;
+        }
+        for (let i = start; i < arr.length; i++) {
+            combo.push(arr[i]);      // strings are fine
+            backtrack(i + 1, combo);
+            combo.pop();
+        }
+    }
+
+    backtrack(0, []);
+    return result;
+}

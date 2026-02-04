@@ -186,3 +186,7 @@ export const GET_BET_CATEGORIES = async () => {
 export const GET_BET_ITEMS = async (subId) => {
     return await API.get(`${prefix}/bet/items/${subId}`);
 }
+
+export const DO_BET = async (data) => {
+    return await API.post(`${prefix}/bet/do-bet`, data);
+}

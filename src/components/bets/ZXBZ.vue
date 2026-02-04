@@ -10,12 +10,14 @@
                 </div>
             </v-col>
         </v-row>
+        <div class="mt-3 text-caption"><span class="text-red">1</span>单<span class="text-red">{{ groupCombinations.length }}</span>组<span class="text-red">{{ props.betAmount * groupCombinations.length }}</span>元</div>
     </v-card>
 </template>
 
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue';
 import { useZodiacStore } from '../../stores/zodiac';
+import { combinations } from '../../js/common';
 
 const zodiacStore = useZodiacStore();
 const numbers = zodiacStore.xNumbers;
@@ -24,9 +26,23 @@ const props = defineProps({
     items: {
         type: Array,
         required: true,
-    }
+    },
+    betAmount: {
+        type: Number,
+        required: true,
+    },
+    sub: {
+        type: Object,
+        required: true,
+    },
 });
+const emit = defineEmits(['update:selectedItems']);
 const selectedItems = ref([]);
+const groupCombinations = computed(() => {
+    return combinations(selectedItems.value, props.sub?.limit_bet_count);
+});
+
+
 const getImg = (num) => {
     const index = numbers.findIndex(n => n.id === num);
     if (index === -1) return '';
@@ -40,6 +56,7 @@ const toggleItem = (item) => {
     } else {
         selectedItems.value.splice(index, 1);
     }
+    emit('update:selectedItems', selectedItems.value);
 };
 
 onMounted(() => {
