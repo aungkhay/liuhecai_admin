@@ -99,6 +99,14 @@ const routes = [
                 meta: {
                     title: '下注',
                 }
+            },
+            {
+                path: prefix + '/bet-history',
+                name: 'bet-history',
+                component: () => import('../views/BetHistory.vue'),
+                meta: {
+                    title: '下注记录',
+                }
             }
         ]
     }

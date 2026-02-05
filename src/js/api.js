@@ -190,3 +190,13 @@ export const GET_BET_ITEMS = async (subId) => {
 export const DO_BET = async (data) => {
     return await API.post(`${prefix}/bet/do-bet`, data);
 }
+
+export const BET_HISTORY = async (page = 1, perPage = 10, filters = {}) => {
+    return await API.get(`${prefix}/bet/history`, {
+        params: {
+            page: page,
+            perPage: perPage,
+            ...filters
+        }
+    });
+}

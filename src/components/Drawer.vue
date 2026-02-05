@@ -161,6 +161,12 @@ const drawerItems = ref([
         icon: 'mdi-cash-multiple',
         routeName: 'do-bet',
         isSelected: false,
+    },
+    {
+        title: '下注记录',
+        icon: 'mdi-history',
+        routeName: 'bet-history',
+        isSelected: false,
     }
 ]);
 
