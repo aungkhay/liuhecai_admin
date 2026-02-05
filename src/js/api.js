@@ -200,3 +200,7 @@ export const BET_HISTORY = async (page = 1, perPage = 10, filters = {}) => {
         }
     });
 }
+
+export const BET_SUMMARY = async () => {
+    return await API.get(`${prefix}/bet/summary`);
+}
