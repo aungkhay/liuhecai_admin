@@ -45,14 +45,6 @@ export const LOGOUT = async function () {
     return res;
 }
 
-export const CURRENT_YEAR = async function () {
-    const res = await API.get(`${prefix}/current-year`);
-    if (res.code == 1000) {
-        const zodiacStore = useZodiacStore();
-        zodiacStore.setCurrentYear(res.data.year);
-    }
-}
-
 export const BANNERS = async function () {
     return await API.get(`${prefix}/banners`);
 }

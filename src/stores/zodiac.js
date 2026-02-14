@@ -4,6 +4,20 @@ import { orderZodiac } from '../js/common';
 export const useZodiacStore = defineStore('zodiac', {
     state: () => ({
         currentYear: '',
+        currentZodiac: '',
+        zodiacYears: [
+            { animal: "rat", from_date: "2020-01-25", to_date: "2021-02-11" },
+            { animal: "ox", from_date: "2021-02-12", to_date: "2022-01-31" },
+            { animal: "tiger", from_date: "2022-02-01", to_date: "2023-01-21" },
+            { animal: "rabbit", from_date: "2023-01-22", to_date: "2024-02-09" },
+            { animal: "dragon", from_date: "2024-02-10", to_date: "2025-01-28" },
+            { animal: "snake", from_date: "2025-01-29", to_date: "2026-02-16" },
+            { animal: "horse", from_date: "2026-02-17", to_date: "2027-02-05" },
+            { animal: "goat", from_date: "2027-02-06", to_date: "2028-01-25" },
+            { animal: "monkey", from_date: "2028-01-26", to_date: "2029-02-12" },
+            { animal: "rooster", from_date: "2029-02-13", to_date: "2030-02-02" },
+            { animal: "dog", from_date: "2030-02-03", to_date: "2031-01-22" }
+        ],
         xYear: {
             2020: 'rat',
             2021: 'ox',
@@ -154,13 +168,24 @@ export const useZodiacStore = defineStore('zodiac', {
         ]
     }),
     actions: {
-        setCurrentYear(year) {
-            this.currentYear = year;
+        setCurrentYear() {
+            const currentDate = new Date();
+            const currentYearData = this.zodiacYears.find(y => {
+                const fromDate = new Date(y.from_date);
+                const toDate = new Date(y.to_date);
+                return currentDate >= fromDate && currentDate <= toDate;
+            });
+            if (currentYearData) {
+                this.currentYear = parseInt(currentYearData.from_date.split('-')[0]);
+                this.currentZodiac = currentYearData.animal;
+            }
+            console.log('Current Year:', this.currentYear);
+            console.log('Current Zodiac:', this.currentZodiac);
         },
 
         orderZodiac() {
             const zodiacList = [];
-            const currentZodiac = this.xZodiacs.find(z => z.key == this.xYear[this.currentYear]);
+            const currentZodiac = this.xZodiacs.find(z => z.key == this.currentZodiac);
             const arr = orderZodiac(currentZodiac.id);
             for (let i = 0; i < arr.length; i++) {
                 const zodiacId = arr[i];
