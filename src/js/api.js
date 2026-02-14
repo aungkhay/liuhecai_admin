@@ -204,3 +204,28 @@ export const BET_HISTORY = async (page = 1, perPage = 10, filters = {}) => {
 export const BET_SUMMARY = async () => {
     return await API.get(`${prefix}/bet/summary`);
 }
+
+export const REFERENCE_LINKS = async () => {
+    return await API.get(`${prefix}/reference-links`);
+}
+
+export const CREATE_REFERENCE_LINK = async (data) => {
+    return await API.post(`${prefix}/reference-links/create`, data);
+}
+
+export const UPDATE_REFERENCE_LINK = async (id, data) => {
+    return await API.post(`${prefix}/reference-links/${id}/update`, data);
+}
+
+export const DELETE_REFERENCE_LINK = async (id) => {
+    return await API.post(`${prefix}/reference-links/${id}/delete`);
+}
+
+export const UPLOAD_REFERENCE_LINK_IMAGE = async (id, formData) => {
+    const config = {
+        method: 'post',
+        url: `${prefix}/reference-links/${id}/upload`,
+        data: formData
+    }
+    return API(config);
+}

@@ -154,6 +154,12 @@ const drawerItems = ref([
                 routeName: 'double-color',
                 isSelected: false,
             },
+            {
+                title: '参考链接',
+                icon: 'mdi-circle-small',
+                routeName: 'reference-link',
+                isSelected: false,
+            },
         ],
     },
     {

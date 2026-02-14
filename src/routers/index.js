@@ -93,6 +93,14 @@ const routes = [
                 }
             },
             {
+                path: prefix + '/reference-link',
+                name: 'reference-link',
+                component: () => import('../views/ReferenceLink.vue'),
+                meta: {
+                    title: '参考链接',
+                }
+            },
+            {
                 path: prefix + '/do-bet',
                 name: 'do-bet',
                 component: () => import('../views/DoBet.vue'),
