@@ -190,14 +190,14 @@ import { orderZodiac } from "../js/common";
 import { useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
 
-const route = useRoute();
 const toast = useToast();
 const zodiacStore = useZodiacStore();
 const numbers = computed(() => zodiacStore.getNumbers);
-const years = computed(() => zodiacStore.getXYear);
+const zodiacYears = computed(() => zodiacStore.getZodiacYears);
 const zodiacs = computed(() => zodiacStore.getZodiacs);
 const comparisons = computed(() => zodiacStore.getComparisons);
 const currentYear = computed(() => zodiacStore.currentYear);
+const currentZodiac = computed(() => zodiacStore.currentZodiac);
 const zodiacMap = {
     'rat': '鼠',
     'ox': '牛',
@@ -217,14 +217,10 @@ const lotteryType = ref('platform');
 const lastBatchNumber = ref(0);
 
 const formatedYears = computed(() => {
-    const arr = [];
-    const curYear = new Date().getFullYear();
-    for (const key in years.value) {
-        if (Number(key) > curYear) continue;
-        arr.push({ key: Number(key), title: `${key}年 (${zodiacMap[years.value[key]]}年)` } );
-    }
-    return arr;
-}) 
+    return zodiacYears.value.map(y => {
+        return { key: y.from_date.split('-')[0], title: `${y.from_date.split('-')[0]}年 (${zodiacMap[y.animal]}年)` }
+    });
+})
 
 const records = ref([]);
 const page = ref(1);
@@ -359,7 +355,7 @@ const saveRecord = async () => {
     if(v$.value.$invalid || isSaving.value) return;
     isSaving.value = true;
 
-    const selectedZodiac = zodiacs.value.find(z => z.key === years.value[obj.value.year]);
+    const selectedZodiac = zodiacs.value.find(z => z.key === currentZodiac.value);
     const arr = orderZodiac(selectedZodiac.id);
     const orderedResults = [];
     for (let i = 0; i < arr.length; i++) {

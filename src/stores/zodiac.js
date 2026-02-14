@@ -18,19 +18,6 @@ export const useZodiacStore = defineStore('zodiac', {
             { animal: "rooster", from_date: "2029-02-13", to_date: "2030-02-02" },
             { animal: "dog", from_date: "2030-02-03", to_date: "2031-01-22" }
         ],
-        xYear: {
-            2020: 'rat',
-            2021: 'ox',
-            2022: 'tiger',
-            2023: 'rabbit',
-            2024: 'dragon',
-            2025: 'snake',
-            2026: 'horse',
-            2027: 'goat',
-            2028: 'monkey',
-            2029: 'rooster',
-            2030: 'dog',
-        },
         zodiacPerYear: {},
         xZodiacs: [
             { id: 1, name: '鼠', key: 'rat' },
@@ -213,8 +200,9 @@ export const useZodiacStore = defineStore('zodiac', {
         getZodiacs: (state) => state.xZodiacs,
         getComparisons: (state) => state.xComparisons,
         getCurrentYear: (state) => state.currentYear,
+        getCurrentZodiac: (state) => state.currentZodiac,
         getOrderedZodiacs: (state) => state.zodiacPerYear[state.currentYear],
-        getXYear: (state) => state.xYear,
+        getZodiacYears: (state) => state.zodiacYears,
         getWuXingNumbers: (state) => {
             return {
                 jin: state.xNumbers.filter(num => num.wuxing === '金').map(n => { return { num: n.num, color: n.color } }),
