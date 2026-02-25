@@ -15,7 +15,7 @@
             <tbody>
                 <tr v-for="(record, index) in records" :key="index" style="height: 60px;">
                     <td>{{ index + 1 }}</td>
-                    <td>{{ record.batch_number.padStart(3, '0') }}期</td>
+                    <td>{{ record.batch_number.padStart(3, '0') }}</td>
                     <td>
                         <div class="d-flex align-center">
                             <div v-for="n in 6" :key="n" class="d-flex flex-column align-center">
@@ -275,7 +275,7 @@ const getImg = (num_desc) => {
 
 const getZodiacName = (num_desc) => {
     const desc = num_desc.split('/');
-    return desc[0] + '' + desc[1];
+    return desc[0] + '/' + desc[1];
 }
 
 const resetForm = () => {

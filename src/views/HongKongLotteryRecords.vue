@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-btn color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
+        <!-- <v-btn color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn> -->
         <v-table>
             <thead>
                 <tr>
@@ -9,13 +9,13 @@
                     <th style="min-width: 170px;">开奖号码</th>
                     <th style="min-width: 170px;">开奖时间</th>
                     <th style="min-width: 170px;">创建时间</th>
-                    <th style="min-width: 170px;">操作</th>
+                    <!-- <th style="min-width: 170px;">操作</th> -->
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(record, index) in records" :key="index" style="height: 60px;">
                     <td>{{ index + 1 }}</td>
-                    <td>{{ record.batch_number.padStart(3, '0') }}期</td>
+                    <td>{{ record.batch_number.padStart(3, '0') }}</td>
                     <td>
                         <div class="d-flex align-center">
                             <div v-for="n in 6" :key="n" class="d-flex flex-column align-center">
@@ -37,10 +37,10 @@
                     </td>
                     <td>{{ $filters.formatDate(record.draw_date) }}</td>
                     <td>{{ $filters.formatDate(record.createdAt) }}</td>
-                    <td>
+                    <!-- <td>
                         <v-btn size="small" color="success" class="mr-1" @click="editRecord(record)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
                         <v-btn size="small" color="error" @click="confirmDelete(record)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
-                    </td>
+                    </td> -->
                 </tr>
             </tbody>
         </v-table>
@@ -270,7 +270,7 @@ const getImg = (num_desc) => {
 
 const getZodiacName = (num_desc) => {
     const desc = num_desc.split('/');
-    return desc[0] + '' + desc[1];
+    return desc[0] + '/' + desc[1];
 }
 
 const resetForm = () => {
