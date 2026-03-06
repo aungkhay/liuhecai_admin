@@ -22,7 +22,14 @@ export const useCartStore = defineStore('cart', {
             this.carts = [];
             localStorage.removeItem('_carts_');
             this.added_to_cart = false;
-        }
+        },
+        updateCart(code, betAmount) {
+            const cart = this.carts.find(c => c.code === code);
+            if (cart) {
+                cart.betAmount = betAmount;
+                localStorage.setItem('_carts_', JSON.stringify(this.carts));
+            }
+        },
     },
     getters: {
         getCarts: (state) => state.carts,

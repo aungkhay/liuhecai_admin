@@ -234,6 +234,8 @@ const addToCart = () => {
             // check code exists in cart
             const exists = cartStore.getCarts.find(c => c.code === item.code);
             if (exists) {
+                // increase betAmount
+                cartStore.updateCart(item.code, Number(exists.betAmount) + Number(betAmount.value));
                 return;
             }
 
