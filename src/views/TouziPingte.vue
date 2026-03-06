@@ -80,6 +80,20 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
+
+        <v-dialog
+            v-model="deleteDialog"
+            width="300"
+            persistent
+        >
+            <v-card>
+                <v-card-title class="text-h6">确认删除吗？</v-card-title>
+                <v-card-actions class="d-flex justify-end">
+                    <v-btn variant="text" :disabled="isDeleting" @click="deleteDialog = false">取消</v-btn>
+                    <v-btn color="error" :disabled="isDeleting" @click="confirmDelete"><v-icon class="mr-2">mdi-delete</v-icon> 删除</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 
@@ -102,6 +116,8 @@ const total = ref(0);
 const totalPage = ref(0);
 const isLoading = ref(false);
 const dialog = ref(false);
+const deleteDialog = ref(false);
+const isDeleting = ref(false);
 const isSaving = ref(false);
 const selectedId = ref(0);
 const lastBatchNumber = ref(0);
@@ -182,6 +198,25 @@ const goToLast = () => {
 }
 const switchPage = () => {
     getRecords();
+}
+
+const deleteRecord = async (id) => {
+    selectedId.value = id;
+    deleteDialog.value = true;
+}
+
+const confirmDelete = async () => {
+    isDeleting.value = true;
+    const res = await DELETE_TOUZI_PINGTE(selectedId.value);
+    if (res.code == 1000) {
+        deleteDialog.value = false;
+        selectedId.value = 0;
+        await getRecords();
+        toast.success(res.message);
+    } else {
+        toast.error(res.message);
+    }
+    isDeleting.value = false;
 }
 
 onMounted(() => {
