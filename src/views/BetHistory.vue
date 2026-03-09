@@ -120,7 +120,7 @@
                     <td>{{ bet.odds }}</td>
                     <td>{{ bet.bet_amount }}</td>
                     <td>{{ bet.remark }}</td>
-                    <td>{{ $filters.formatDate(bet.createdAt) }}</td>
+                    <td>{{ $filters.formatFullDate(bet.createdAt) }}</td>
                 </tr>
             </tbody>
         </v-table>

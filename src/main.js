@@ -28,8 +28,11 @@ const options = {
 
 import moment from 'moment';
 app.config.globalProperties.$filters = {
-    formatDate(date) {
+    formatFullDate(date) {
         return moment(date).format('YYYY-MM-DD HH:mm:ss')
+    },
+    formatDate(date) {
+        return moment(date).format('YYYY-MM-DD')
     }
 }
 

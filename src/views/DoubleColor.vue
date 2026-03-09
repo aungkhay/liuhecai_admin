@@ -6,7 +6,6 @@
             <thead>
                 <tr>
                     <th>序列</th>
-                    <th>年</th>
                     <th>期号</th>
                     <th>颜色</th>
                     <th>结果</th>
@@ -18,12 +17,14 @@
             <tbody>
                 <tr v-for="(record, index) in records" :key="index">
                     <td>{{ index + 1 + (page - 1) * perPage }}</td>
-                    <td>{{ record.year }}</td>
                     <td>{{ String(record.batch_number).padStart(3, '0') }}</td>
                     <td>{{ colorMap[record.color_one] }} , {{ colorMap[record.color_two] }}</td>
                     <td>{{ record.result_number == 0 ? '-' : String(record.result_number).padStart(2, '0') }} <span v-if="record.zodiac_name">{{ record.zodiac_name }}</span></td>
-                    <td>{{ record.match_color == record.color_one || record.match_color == record.color_two ? '准' : '不准' }}</td>
-                    <td>{{ $filters.formatDate(record.createdAt) }}</td>
+                    <td>
+                        <v-chip v-if="record.match_color == record.color_one || record.match_color == record.color_two" color="success">准</v-chip>
+                        <v-chip v-else color="error">不准</v-chip>
+                    </td>
+                    <td>{{ $filters.formatFullDate(record.createdAt) }}</td>
                     <td>
                         <v-btn color="success" size="small" class="mr-2" @click="editRecord(record)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
                         <v-btn color="error" size="small" @click="confirmDelete(record.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
@@ -178,8 +179,8 @@ const fetchLastBatchNumber = async () => {
     const res = await GET_PLATFORM_LAST_BATCH_NUMBER();
     if (res.code == 1000) {
         const last = Number(res.data.last_batch_number);
-        lastBatchNumber.value = last;
-        obj.value.batch_number = last;
+        lastBatchNumber.value = last + 1;
+        obj.value.batch_number = last + 1;
     }
 }
 

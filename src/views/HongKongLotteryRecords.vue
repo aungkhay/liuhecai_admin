@@ -7,7 +7,7 @@
                     <th style="min-width: 100px;">顺序</th>
                     <th style="min-width: 100px;">期号</th>
                     <th style="min-width: 170px;">开奖号码</th>
-                    <th style="min-width: 170px;">开奖时间</th>
+                    <th style="min-width: 170px;">开奖日期</th>
                     <th style="min-width: 170px;">创建时间</th>
                     <!-- <th style="min-width: 170px;">操作</th> -->
                 </tr>
@@ -36,7 +36,7 @@
                         </div>
                     </td>
                     <td>{{ $filters.formatDate(record.draw_date) }}</td>
-                    <td>{{ $filters.formatDate(record.createdAt) }}</td>
+                    <td>{{ $filters.formatFullDate(record.createdAt) }}</td>
                     <!-- <td>
                         <v-btn size="small" color="success" class="mr-1" @click="editRecord(record)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
                         <v-btn size="small" color="error" @click="confirmDelete(record)"><v-icon>mdi-delete</v-icon> 删除</v-btn>

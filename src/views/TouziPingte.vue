@@ -6,7 +6,6 @@
             <thead>
                 <tr>
                     <th>序列</th>
-                    <th>年</th>
                     <th>期号</th>
                     <th>生肖</th>
                     <th>开球数</th>
@@ -18,12 +17,14 @@
             <tbody>
                 <tr v-for="(record, index) in records" :key="index">
                     <td>{{ record.id }}</td>
-                    <td>{{ record.year }}</td>
                     <td>{{ String(record.batch_start).padStart(3, '0') }} - {{ String(record.batch_end).padStart(3, '0') }}</td>
                     <td>{{ record.zodiac_name }}</td>
                     <td>{{ record.open_count }}</td>
-                    <td>{{ record.is_finished ? '已完成' : '未完成' }}</td>
-                    <td>{{ $filters.formatDate(record.createdAt) }}</td>
+                    <td>
+                        <v-chip v-if="record.is_finished == 0" color="warning">未完成</v-chip>
+                        <v-chip v-else color="success">已完成</v-chip>
+                    </td>
+                    <td>{{ $filters.formatFullDate(record.createdAt) }}</td>
                     <td>
                         <v-btn v-if="!record.is_finished" size="small" color="error" @click="deleteRecord(record.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
                     </td>
@@ -150,8 +151,8 @@ const getRecords = async () => {
 const resetForm = () => {
     selectedId.value = 0;
     obj.value.year = zodiacStore.currentYear;
-    obj.value.batch_start = lastBatchNumber.value;
-    obj.value.batch_end = lastBatchNumber.value + 1;
+    obj.value.batch_start = lastBatchNumber.value + 1;
+    obj.value.batch_end = lastBatchNumber.value + 2;
     obj.value.zodiac_name = '';
     v$.value.$reset();
 }
@@ -161,8 +162,8 @@ const fetchLastBatchNumber = async () => {
     if (res.code == 1000) {
         const last = Number(res.data.last_batch_number);
         lastBatchNumber.value = last;
-        obj.value.batch_start = last;
-        obj.value.batch_end = last + 1;
+        obj.value.batch_start = last + 1;
+        obj.value.batch_end = last + 2;
     }
 }
 

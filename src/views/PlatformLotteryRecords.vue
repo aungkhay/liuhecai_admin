@@ -7,7 +7,7 @@
                     <th style="min-width: 100px;">顺序</th>
                     <th style="min-width: 100px;">期号</th>
                     <th style="min-width: 170px;">开奖号码</th>
-                    <th style="min-width: 170px;">开奖时间</th>
+                    <th style="min-width: 170px;">开奖日期</th>
                     <th style="min-width: 170px;">创建时间</th>
                     <th style="min-width: 170px;">操作</th>
                 </tr>
@@ -36,7 +36,7 @@
                         </div>
                     </td>
                     <td>{{ $filters.formatDate(record.draw_date) }}</td>
-                    <td>{{ $filters.formatDate(record.createdAt) }}</td>
+                    <td>{{ $filters.formatFullDate(record.createdAt) }}</td>
                     <td>
                         <v-btn size="small" color="success" class="mr-1" @click="editRecord(record)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
                         <v-btn size="small" color="error" @click="confirmDelete(record)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
@@ -87,6 +87,7 @@
                             <v-text-field
                                 v-model="obj.batch_number"
                                 label="期号"
+                                placeholder="例如: 26001"
                                 variant="outlined"
                                 class="mb-2"
                                 prepend-inner-icon="mdi-pound"
@@ -125,7 +126,7 @@
                         </v-col>
                         <v-col cols="6" v-for="n in 7" :key="n" :class="n % 2 === 0 ? 'pl-1' : 'pr-1'">
                             <v-select
-                                :label="`号码${n}`"
+                                :label="`${n == 7 ? '特码' : '正码'  + n}`"
                                 v-model="obj[`num${n}`]"
                                 :items="numbers"
                                 item-title="num"
@@ -214,7 +215,7 @@ const zodiacMap = {
 };
 
 const lotteryType = ref('platform');
-const lastBatchNumber = ref(0);
+const lastBatchNumber = ref('');
 
 const formatedYears = computed(() => {
     return zodiacYears.value.map(y => {
@@ -257,7 +258,22 @@ const selectedRecord = ref(null);
 const selectedId = ref(0);
 
 const rules = ref({
-    batch_number: { required: helpers.withMessage('期号不能为空', required) },
+    batch_number: { 
+        required: helpers.withMessage('期号不能为空', required),
+        // format: 26001 => 26 means 2026 year, 001 means the first batch of that year
+        validate: helpers.withMessage('期号格式不正确', value => {
+            if (!value) return true;
+            const batchValue = String(value).trim();
+            const regex = /^\d{5}$/;
+            if (!regex.test(batchValue)) return false;
+            const yearPart = batchValue.substring(0, 2);
+            const batchPart = batchValue.substring(2);
+            const year = parseInt(yearPart, 10);
+            const batch = parseInt(batchPart, 10);
+            if (isNaN(year) || isNaN(batch)) return false;
+            return year >= 0 && year <= 99 && batch > 0 && batch <= 365;
+        }) 
+    },
     draw_date: { required: helpers.withMessage('开奖日期不能为空', required) },
     num1: { required: helpers.withMessage('号码1不能为空', required) },
     num2: { required: helpers.withMessage('号码2不能为空', required) },
@@ -430,9 +446,10 @@ const deleteRecord = async () => {
 const fetchLastBatchNumber = async () => {
     const res = await GET_PLATFORM_LAST_BATCH_NUMBER();
     if (res.code == 1000) {
-        const last = Number(res.data.last_batch_number);
-        lastBatchNumber.value = last;
-        obj.value.batch_number = last;
+        const last = Number(res.data.last_batch_number); // "26001"
+        const nextBatch = String(last + 1).padStart(5, '0');
+        lastBatchNumber.value = nextBatch;
+        obj.value.batch_number = nextBatch;
     }
 }
 

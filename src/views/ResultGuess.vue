@@ -6,7 +6,6 @@
             <thead>
                 <tr>
                     <th style="min-width: 100px;">序列</th>
-                    <th style="min-width: 100px;">年</th>
                     <th style="min-width: 100px;">期号</th>
                     <th style="min-width: 100px;">属性</th>
                     <th style="min-width: 100px;">结果</th>
@@ -18,12 +17,15 @@
             <tbody>
                 <tr v-for="(result, index) in results" :key="index">
                     <td>{{ index + 1 }}</td>
-                    <td>{{ result.year }}</td>
                     <td>{{ result.batch_number.padStart(3, '0') }}</td>
                     <td>{{ result.zodiac_attr }}</td>
                     <td>{{ result.result_number == 0 ? '-' : String(result.result_number).padStart(2, '0') }} <span v-if="result.zodiac_name">{{ result.zodiac_name }}</span></td>
-                    <td>{{ result.result_match == 0 ? '-' : result.result_match == 1 ? '准' : '不准' }}</td>
-                    <td>{{ $filters.formatDate(result.createdAt) }}</td>
+                    <td>
+                        <v-chip v-if="result.result_match == 1" color="success">准</v-chip>
+                        <v-chip v-else-if="result.result_match == 2" color="error">不准</v-chip>
+                        <v-chip v-else>-</v-chip>
+                    </td>
+                    <td>{{ $filters.formatFullDate(result.createdAt) }}</td>
                     <td>
                         <v-btn color="success" size="small" class="mr-2" @click="editResult(result)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
                         <v-btn color="error" size="small" @click="confirmDelete(result.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
@@ -220,8 +222,8 @@ const fetchLastBatchNumber = async () => {
     const res = await GET_PLATFORM_LAST_BATCH_NUMBER();
     if (res.code == 1000) {
         const last = Number(res.data.last_batch_number);
-        lastBatchNumber.value = last;
-        obj.value.batch_number = last;
+        lastBatchNumber.value = last + 1;
+        obj.value.batch_number = last + 1;
     }
 }
 
