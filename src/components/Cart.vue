@@ -71,12 +71,36 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useCartStore } from '../stores/bet';
 
 const cartStore = useCartStore();
 const carts = computed(() => cartStore.getCarts);
 const totalBetAmount = computed(() => carts.value.reduce((total, cart) => total + Number(cart.betAmount), 0));
+
+const TM_SM_RULES = computed(() => cartStore.get_TM_SM_RULES);
+const TM_SBB_RULES = computed(() => cartStore.get_TM_SBB_RULES);
+const TM_TXTWS_RULES = computed(() => cartStore.get_TM_TXTWS_RULES);
+const TM_HX_RULES = computed(() => cartStore.get_TM_HX_RULES);
+const TM_WX_RULES = computed(() => cartStore.get_TM_WX_RULES);
+const ZM_ZM16_RULES = computed(() => cartStore.get_ZM_ZM16_RULES);
+const ZM_ZXQSB_RULES = computed(() => cartStore.get_ZM_ZXQSB_RULES);
+const LXLW_RULES = computed(() => cartStore.get_LXLW_RULES);
+const YXZXPTWS_RULES = computed(() => cartStore.get_YXZXPTWS_RULES);
+const ZH_RULES = computed(() => cartStore.get_ZH_RULES);
+
+const rules = ref({
+    TM_SM_RULES: TM_SM_RULES,
+    TM_SBB_RULES: TM_SBB_RULES,
+    TM_TXTWS_RULES: TM_TXTWS_RULES,
+    TM_HX_RULES: TM_HX_RULES,
+    TM_WX_RULES: TM_WX_RULES,
+    ZM_ZM16_RULES: ZM_ZM16_RULES,
+    ZM_ZXQSB_RULES: ZM_ZXQSB_RULES,
+    LXLW_RULES: LXLW_RULES,
+    YXZXPTWS_RULES: YXZXPTWS_RULES,
+    ZH_RULES: ZH_RULES,
+})
 
 const props = defineProps({
     dialog: {
@@ -117,17 +141,57 @@ const confirmEdit = () => {
 
 const doBet = () => {
     const data = carts.value.map(cart => {
+        let numbers = {};
+        const codes = cart.code.split(',');
+        for (const [index, code] of codes.entries()) {
+            const split = code.split('_');
+            let ruleName = split[0] + '_' + split[1] + '_RULES';
+            if (split[0] === 'LXLW' || split[0] === 'YXZXPTWS' || split[0] === 'ZH') {
+                ruleName = split[0] + '_RULES';
+            }
+            const newRules = rules.value[ruleName] || [];
+            // console.log(ruleName, newRules)
+
+            for (const key in newRules) {
+                if (!Object.hasOwn(newRules, key)) continue;
+                if (!newRules[code]) continue;
+                numbers[code] = newRules[code];
+            }
+            if (newRules.length == 0) {
+                numbers[code] =[Number(cart.name.split(',')[index])];
+            }
+        }
+
+        const newNumbers = [];
+        for (const key in numbers) {
+            if (!Object.hasOwn(numbers, key)) continue;
+            for (const num of numbers[key]) {
+                if (!num) continue;
+                newNumbers.push({
+                    code: key,
+                    number: num,
+                });
+            }
+        }
+
         return {
             category_id: cart.categoryId,
             sub_category_id: cart.subCategoryId,
             item_code: cart.code,
             item_name: cart.name,
+            numbers: newNumbers,
             odds: cart.odds,
             bet_amount: cart.betAmount,
             remark: remark.value,
         };
     });
 
+    console.log('bet data', data);
+
     emit('doBet', data);
 };
+
+onMounted(() => {
+    cartStore.orderedZodiac();
+})
 </script>

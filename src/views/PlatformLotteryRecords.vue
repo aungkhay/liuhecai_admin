@@ -8,6 +8,7 @@
                     <th style="min-width: 100px;">期号</th>
                     <th style="min-width: 170px;">开奖号码</th>
                     <th style="min-width: 170px;">开奖日期</th>
+                    <th style="min-width: 100">计算状态</th>
                     <th style="min-width: 170px;">创建时间</th>
                     <th style="min-width: 170px;">操作</th>
                 </tr>
@@ -36,10 +37,15 @@
                         </div>
                     </td>
                     <td>{{ $filters.formatDate(record.draw_date) }}</td>
+                    <td>
+                        <v-chip v-if="record.calculate_status == 0">未计算</v-chip>
+                        <v-chip v-else-if="record.calculate_status == 1" color="warning">计算中</v-chip>
+                        <v-chip v-else color="success">已计算</v-chip>
+                    </td>
                     <td>{{ $filters.formatFullDate(record.createdAt) }}</td>
                     <td>
-                        <v-btn size="small" color="success" class="mr-1" @click="editRecord(record)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
-                        <v-btn size="small" color="error" @click="confirmDelete(record)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                        <!-- <v-btn size="small" color="success" class="mr-1" @click="editRecord(record)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn> -->
+                        <v-btn size="small" color="error" :disabled="record.calculate_status != 0" @click="confirmDelete(record)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
                     </td>
                 </tr>
             </tbody>
@@ -82,14 +88,13 @@
                         item-value="key"
                         variant="outlined"
                     ></v-select>
-                    <v-row no-gutters>
-                        <v-col cols="6" class="pr-1">
+                    <v-row dense>
+                        <v-col cols="6">
                             <v-text-field
                                 v-model="obj.batch_number"
                                 label="期号"
                                 placeholder="例如: 26001"
                                 variant="outlined"
-                                class="mb-2"
                                 prepend-inner-icon="mdi-pound"
                                 :error-messages="v$.batch_number.$errors.map(e => e.$message)"
                                 @input="v$.batch_number.$touch"
@@ -97,7 +102,7 @@
                                 readonly
                             ></v-text-field>
                         </v-col>
-                        <v-col cols="6" class="pl-1">
+                        <v-col cols="6">
                             <v-menu
                                 v-model="dateMenu"
                                 :close-on-content-click="false"
@@ -110,7 +115,6 @@
                                         label="开奖日期"
                                         readonly
                                         variant="outlined"
-                                        class="mb-2"
                                         prepend-inner-icon="mdi-calendar"
                                         :error-messages="v$.draw_date.$errors.map(e => e.$message)"
                                         @input="v$.draw_date.$touch"
@@ -124,7 +128,24 @@
                                 />
                             </v-menu>
                         </v-col>
-                        <v-col cols="6" v-for="n in 7" :key="n" :class="n % 2 === 0 ? 'pl-1' : 'pr-1'">
+                        <v-col cols="12">
+                            <v-btn v-if="!selectedId" @click="generateRandomNumbers" :disabled="isSaving" :loading="generating" color="primary" variant="tonal" block>生成随机号码</v-btn>
+                            <v-table density="compact">
+                                <thead>
+                                    <tr>
+                                        <th>号码</th>
+                                        <th>盈利</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(num, index) in generatedNumbers" :key="index">
+                                        <td>{{ num.num }}</td>
+                                        <td :class="num.total_bet_amount > 0 ? 'text-primary' : 'text-grey'">{{ num.total_bet_amount }}</td>
+                                    </tr>
+                                </tbody>
+                            </v-table>
+                        </v-col>
+                        <!-- <v-col cols="6" v-for="n in 7" :key="n">
                             <v-select
                                 :label="`${n == 7 ? '特码' : '正码'  + n}`"
                                 v-model="obj[`num${n}`]"
@@ -154,11 +175,11 @@
                                     <span :style="{ color: item.raw.color }">{{ item.raw.num }}</span>
                                 </template>
                             </v-select>
-                        </v-col>
+                        </v-col> -->
                     </v-row>
 
                     <div class="d-flex justify-end mt-3">
-                        <v-btn color="primary" :disabled="isSaving || v$.$invalid" @click="saveRecord"><v-icon class="mr-2">mdi-content-save-outline</v-icon> {{ selectedId == 0 ? '保存' : '更新' }}</v-btn>
+                        <v-btn color="primary" :disabled="isSaving || generating || v$.$invalid" @click="saveRecord"><v-icon class="mr-2">mdi-content-save-outline</v-icon> {{ selectedId == 0 ? '保存' : '更新' }}</v-btn>
                     </div>
                 </v-card-text>
             </v-card>
@@ -186,7 +207,7 @@ import { onMounted, ref, computed, watch } from "vue";
 import { useZodiacStore } from "../stores/zodiac";
 import { useVuelidate } from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
-import { LOTTERY_RECORDS, CREATE_LOTTERY_RECORD, UPDATE_LOTTERY_RECORD, DELETE_LOTTERY_RECORD, GET_PLATFORM_LAST_BATCH_NUMBER } from "../js/api";
+import { LOTTERY_RECORDS, CREATE_LOTTERY_RECORD, UPDATE_LOTTERY_RECORD, DELETE_LOTTERY_RECORD, GET_PLATFORM_LAST_BATCH_NUMBER, CHECK_BET_NUMBERS } from "../js/api";
 import { orderZodiac } from "../js/common";
 import { useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
@@ -216,6 +237,8 @@ const zodiacMap = {
 
 const lotteryType = ref('platform');
 const lastBatchNumber = ref('');
+const generating = ref(false);
+const generatedNumbers = ref([]);
 
 const formatedYears = computed(() => {
     return zodiacYears.value.map(y => {
@@ -249,7 +272,7 @@ const obj = ref({
     num5_desc: "",
     num6_desc: "",
     num7_desc: "",
-    draw_date: "",
+    draw_date: new Date,
 });
 const dateMenu = ref(false);
 const isSaving = ref(false);
@@ -305,7 +328,7 @@ const resetForm = () => {
     obj.value.num5 = null;
     obj.value.num6 = null;
     obj.value.num7 = null;
-    obj.value.draw_date = "";
+    obj.value.draw_date = new Date;
     obj.value.num1_desc = "";
     obj.value.num2_desc = "";
     obj.value.num3_desc = "";
@@ -451,6 +474,32 @@ const fetchLastBatchNumber = async () => {
         lastBatchNumber.value = nextBatch;
         obj.value.batch_number = nextBatch;
     }
+}
+
+const generateRandomNumbers = async () => {
+    generating.value = true;
+    const nums = [];
+    generatedNumbers.value = [];
+    while (nums.length < 7) {
+        const rand = Math.floor(Math.random() * 49) + 1;
+        if (!nums.includes(rand)) {
+            nums.push(rand);
+            obj.value[`num${nums.length}`] = rand;
+        }
+    }
+
+    for (let i = 0; i < nums.length; i++) {
+        const num = nums[i];
+        const res = await CHECK_BET_NUMBERS(num);
+        if (res.code == 1000) {
+            generatedNumbers.value.push({
+                num: num,
+                total_bet_amount: res.data.total_bet_amount,
+            });
+        }
+    }
+
+    generating.value = false;
 }
 
 onMounted(() => {

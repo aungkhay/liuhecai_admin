@@ -119,7 +119,9 @@ import ZX from '../components/bets/ZX.vue';
 import ZXBZ from '../components/bets/ZXBZ.vue';
 import { useCartStore } from '../stores/bet';
 import Cart from '../components/Cart.vue';
+import { useToast } from 'vue-toastification';
 
+const toast = useToast();
 const cartStore = useCartStore();
 const carts = computed(() => cartStore.getCarts);
 
@@ -191,10 +193,16 @@ const updateSelectedItems = (newSelectedItems) => {
 
 const addToCart = () => {
     const data = [];
-    const noInputItems = ['TM_HX', 'LM_3Z2', 'LM_3QZ', 'LM_2QZ', 'LM_2ZT', 'LM_TC', 'LM_4QZ', 'ZXBZ'];
+    const noInputItems = [
+        'TM_HX', 
+        'LXLW_2LX', 'LXLW_3LX', 'LXLW_4LX', 'LXLW_5LX', 'LXLW_2LW', 'LXLW_3LW', 'LXLW_4LW', 'LXLW_5LW',
+        'LM_3Z2', 'LM_3QZ', 'LM_2QZ', 'LM_2ZT', 'LM_TC', 'LM_4QZ', 
+        'ZXBZ'
+    ];
     if (noInputItems.includes(sub.value.code)) {
         let itemName = '';
         let itemCode = '';
+        let itemOdds = selectedItems.value.length > 0 ? selectedItems.value[0].odds : 0;
         selectedItems.value.forEach(item => {
             itemName += item.name + ',';
             itemCode += item.code + ',';
@@ -216,6 +224,8 @@ const addToCart = () => {
             } else if (sub.value.code === 'LM_4QZ') {
                 odds = sub.value.odds['4QZ'];
             }
+        } else if (['LXLW_2LX', 'LXLW_3LX', 'LXLW_4LX', 'LXLW_5LX', 'LXLW_2LW', 'LXLW_3LW', 'LXLW_4LW', 'LXLW_5LW'].includes(sub.value.code)) {
+            odds = selectedItems.value.length > 0 ? selectedItems.value[0].odds : 0;
         } else if (sub.value.code === 'ZXBZ') {
             odds = sub.value.odds[`${selectedItems.value.length}BZ`];
         }
@@ -264,6 +274,8 @@ const doBet = async (data) => {
         if (res && res.code == 1000) {
             cartStore.clearCarts();
             showCart.value = false;
+        } else {
+            toast.error(res.message || '投注失败');
         }
     } catch (error) {
         console.error('Betting failed:', error);

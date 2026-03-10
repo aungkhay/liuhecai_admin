@@ -76,6 +76,14 @@ export const LOTTERY_RECORDS = async function (page = 1, perPage = 10, lottery_t
     });
 }
 
+export const CHECK_BET_NUMBERS = async function (num) {
+    return await API.get(`${prefix}/check-number-in-bets`, {
+        params: {
+            num: num,
+        }
+    });
+}
+
 export const CREATE_LOTTERY_RECORD = async function (data) {
     return await API.post(`${prefix}/lottery-records/create`, data);
 }
