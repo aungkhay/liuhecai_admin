@@ -1,6 +1,9 @@
 <template>
     <div>
-        <v-btn color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
+        <div class="d-flex align-center">
+            <v-btn color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
+            <div class="ml-4">总投注金额: <span class="text-primary font-weight-bold">{{ allBetAmount }}</span> 元</div>
+        </div>
         <v-table>
             <thead>
                 <tr>
@@ -130,20 +133,21 @@
                         </v-col>
                         <v-col cols="12">
                             <v-btn v-if="!selectedId" @click="generateRandomNumbers" :disabled="isSaving" :loading="generating" color="primary" variant="tonal" block>生成随机号码</v-btn>
-                            <v-table density="compact">
-                                <thead>
-                                    <tr>
-                                        <th>号码</th>
-                                        <th>盈利</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="(num, index) in generatedNumbers" :key="index">
-                                        <td>{{ num.num }}</td>
-                                        <td :class="num.total_bet_amount > 0 ? 'text-primary' : 'text-grey'">{{ num.total_bet_amount }}</td>
-                                    </tr>
-                                </tbody>
-                            </v-table>
+                            <div class="mt-5" v-if="obj.num1">
+                                <div class="d-flex justify-space-between border pa-2 rounded-lg">
+                                    <div v-for="n in 7" :key="n" class="d-flex flex-column align-center">
+                                        <div class="text-caption">{{ n < 7 ? '正码' + n : '特码' }}</div>
+                                        <span class="border px-3 py-2 d-flex items-center rounded-circle">
+                                            <span class="font-weight-bold">{{ obj[`num${n}`].toString().padStart(2, '0') }}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mt-3 text-end">
+                                    <span>总下注：</span>
+                                    <span class="font-weight-bold">{{ totalBetAmount }}</span>
+                                </div>
+                            </div>
+                            
                         </v-col>
                         <!-- <v-col cols="6" v-for="n in 7" :key="n">
                             <v-select
@@ -238,7 +242,7 @@ const zodiacMap = {
 const lotteryType = ref('platform');
 const lastBatchNumber = ref('');
 const generating = ref(false);
-const generatedNumbers = ref([]);
+const totalBetAmount = ref(0);
 
 const formatedYears = computed(() => {
     return zodiacYears.value.map(y => {
@@ -251,6 +255,7 @@ const page = ref(1);
 const perPage = ref(10);
 const totalPage = ref(0);
 const total = ref(0);
+const allBetAmount = ref(0);
 
 const dialog = ref(null);
 const deleteDialog = ref(null);
@@ -352,6 +357,7 @@ const getRecords = async () => {
         records.value = res.data.records;
         total.value = res.data.meta.total;
         totalPage.value = res.data.meta.totalPage;
+        allBetAmount.value = res.data.total_bet_amount;
     }
 }
 
@@ -478,25 +484,25 @@ const fetchLastBatchNumber = async () => {
 
 const generateRandomNumbers = async () => {
     generating.value = true;
-    const nums = [];
-    generatedNumbers.value = [];
-    while (nums.length < 7) {
-        const rand = Math.floor(Math.random() * 49) + 1;
-        if (!nums.includes(rand)) {
-            nums.push(rand);
-            obj.value[`num${nums.length}`] = rand;
-        }
+    for (let i = 1; i <= 7; i++) {
+       const rand = Math.floor(Math.random() * 49) + 1;
+        obj.value[`num${i}`] = rand;
     }
+    const numbers = {
+        num1: obj.value.num1,
+        num2: obj.value.num2,
+        num3: obj.value.num3,
+        num4: obj.value.num4,
+        num5: obj.value.num5,
+        num6: obj.value.num6,
+        num7: obj.value.num7,
+    }
+    const res = await CHECK_BET_NUMBERS(numbers);
 
-    for (let i = 0; i < nums.length; i++) {
-        const num = nums[i];
-        const res = await CHECK_BET_NUMBERS(num);
-        if (res.code == 1000) {
-            generatedNumbers.value.push({
-                num: num,
-                total_bet_amount: res.data.total_bet_amount,
-            });
-        }
+    if (res.code == 1000) {
+        totalBetAmount.value = res.data.total_bet_amount;
+    } else {
+        toast.error(res.message);
     }
 
     generating.value = false;

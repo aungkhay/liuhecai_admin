@@ -24,11 +24,11 @@ export const useCartStore = defineStore('cart', {
         added_to_cart: false,
         ordered_zodiac: {},
         TM_WX_RULES: {
-            TM_WX_JIN: [3, 4, 11, 12, 25, 26, 33, 34, 41, 42],
-            TM_WX_MU: [7, 8, 13, 14, 17, 18, 23, 24, 27, 28],
-            TM_WX_SHUI: [2, 3, 6, 7, 8, 12, 13, 17, 18, 22, 23, 27, 28],
-            TM_WX_HUO: [1, 6, 9, 10, 15, 16, 19, 20, 21, 26, 29, 30, 33, 34, 37, 38, 39, 40],
-            TM_WX_TU: [5, 6, 11, 12, 25, 26, 35, 36, 45, 46, 49],
+            TM_WX_JIN: [4, 5, 12, 13, 26, 27, 34, 35, 42, 43],
+            TM_WX_MU: [8, 9, 16, 17, 24, 25, 38, 39, 46, 47],
+            TM_WX_SHUI: [1, 14, 15, 22, 23, 30, 31, 44, 45],
+            TM_WX_HUO: [2, 3, 10, 11, 18, 19, 32, 33, 40, 41, 48, 49],
+            TM_WX_TU: [6, 7, 20, 21, 28, 29, 36, 37]
         },
     }),
     actions: {
@@ -94,37 +94,97 @@ export const useCartStore = defineStore('cart', {
         getCarts: (state) => state.carts,
         getAddedToCart: (state) => state.added_to_cart,
         get_TM_SM_RULES: (state) => {
-            const numbers = Array.from({ length: 28 }, (_, i) => i + 1);
+            const numbers = Array.from({ length: 48 }, (_, i) => i + 1);
+            const orderedZodiac = state.ordered_zodiac;
+            console.log(orderedZodiac)
+            // 鼠、虎、蛇、羊、鸡、狗
+            const TIANXIAO = [
+                ...orderedZodiac['SHU'],
+                ...orderedZodiac['HU'], 
+                ...orderedZodiac['SHE'], 
+                ...orderedZodiac['YANG'],
+                ...orderedZodiac['JI'],
+                ...orderedZodiac['GOU'],
+            ];
+            // 牛、兔、龙、马、猴、猪
+            const DIXIAO = [
+                ...orderedZodiac['NIU'],
+                ...orderedZodiac['TU'], 
+                ...orderedZodiac['LONG'],
+                ...orderedZodiac['MA'],
+                ...orderedZodiac['HOU'],
+                ...orderedZodiac['ZHU'],
+            ];
+            // 鼠、牛、虎、兔、龙、蛇
+            const HOUXIAO = [
+                ...orderedZodiac['SHU'],
+                ...orderedZodiac['NIU'], 
+                ...orderedZodiac['HU'],
+                ...orderedZodiac['TU'],
+                ...orderedZodiac['LONG'],
+                ...orderedZodiac['SHE'],
+            ];
+            // 马、羊、猴、鸡、狗、猪
+            const QIANXIAO = [
+                ...orderedZodiac['MA'],
+                ...orderedZodiac['YANG'], 
+                ...orderedZodiac['HOU'],
+                ...orderedZodiac['JI'],
+                ...orderedZodiac['GOU'],
+                ...orderedZodiac['ZHU'],
+            ];
+            // 牛、马、羊、鸡、狗、猪
+            const YEXIAO = [
+                ...orderedZodiac['NIU'],
+                ...orderedZodiac['MA'],
+                ...orderedZodiac['YANG'],
+                ...orderedZodiac['JI'],
+                ...orderedZodiac['GOU'],
+                ...orderedZodiac['ZHU'],
+            ];
+            // 鼠、虎、兔、龙、蛇、猴
+            const JIAXIAO = [
+                ...orderedZodiac['SHU'],
+                ...orderedZodiac['HU'],
+                ...orderedZodiac['TU'],
+                ...orderedZodiac['LONG'],
+                ...orderedZodiac['SHE'],
+                ...orderedZodiac['HOU'],
+            ];
             
             return {
-                TM_SM_DA: numbers.filter(n => n <= 14),
-                TM_SM_XIAO: numbers.filter(n => n > 14),
+                // 特码大小
+                TM_SM_DA: numbers.filter(isBig),
+                TM_SM_XIAO: numbers.filter(isSmall),
 
-                TM_SM_DAN: numbers.filter(n => n % 2 === 1),
-                TM_SM_SHUANG: numbers.filter(n => n % 2 === 0),
+                // 特码单双
+                TM_SM_DAN: numbers.filter(isOdd),
+                TM_SM_SHUANG: numbers.filter(isEven),
 
-                TM_SM_HEDA: numbers.filter(n => sumDigits(n) >= 10),
-                TM_SM_HEXIAO: numbers.filter(n => sumDigits(n) <= 9),
+                // 特合大小 (十位 + 个位)
+                TM_SM_HEDA: numbers.filter(n => sumDigits(n) >= 7),
+                TM_SM_HEXIAO: numbers.filter(n => sumDigits(n) <= 6),
 
+                // 特合单双
                 TM_SM_HEDAN: numbers.filter(n => sumDigits(n) % 2 === 1),
                 TM_SM_HESHUANG: numbers.filter(n => sumDigits(n) % 2 === 0),
 
-                TM_SM_TIANXIAO: numbers.filter(n => (n - 1) % 4 === 0),
-                TM_SM_DIXIAO: numbers.filter(n => (n - 2) % 4 === 0),
-                TM_SM_QIANXIAO: numbers.filter(n => (n - 3) % 4 === 0),
-                TM_SM_HOUXIAO: numbers.filter(n => n % 4 === 0),
+                TM_SM_TIANXIAO: TIANXIAO.filter(n => n != 49),
+                TM_SM_DIXIAO: DIXIAO.filter(n => n != 49),
+                TM_SM_QIANXIAO: QIANXIAO.filter(n => n != 49),
+                TM_SM_HOUXIAO: HOUXIAO.filter(n => n != 49),
+                TM_SM_JIAXIAO: JIAXIAO.filter(n => n != 49),
+                TM_SM_YEXIAO: YEXIAO.filter(n => n != 49),
 
-                TM_SM_JIAXIAO: numbers.filter(n => (n - 5) % 4 === 0),
-                TM_SM_YEXIAO: numbers.filter(n => (n - 6) % 4 === 0),
-
+                // 尾数大小
                 TM_SM_WEIDA: numbers.filter(n => n % 10 >= 5),
                 TM_SM_WEIXIAO: numbers.filter(n => n % 10 <= 4),
 
-                TM_SM_DADAN: numbers.filter(n => n <= 14 && n % 2 === 1),
-                TM_SM_DASHUANG: numbers.filter(n => n <= 14 && n % 2 === 0),
-
-                TM_SM_XIAODAN: numbers.filter(n => n > 14 && n % 2 === 1),
-                TM_SM_XIAOSHUANG: numbers.filter(n => n > 14 && n % 2 === 0),
+                // 大小单双组合
+                TM_SM_DADAN: numbers.filter(n => isBig(n) && isOdd(n)),
+                TM_SM_DASHUANG: numbers.filter(n => isBig(n) && isEven(n)),
+                TM_SM_XIAODAN: numbers.filter(n => isSmall(n) && isOdd(n)),
+                TM_SM_XIAOSHUANG: numbers.filter(n => isSmall(n) && isEven(n)),
             }
         },
         get_TM_SBB_RULES: (state) => {
@@ -194,8 +254,8 @@ export const useCartStore = defineStore('cart', {
             const HESHUANG = numbers.filter(n => sumDigits(n) % 2 === 0);
             const HEDA = numbers.filter(n => sumDigits(n) >= 7);
             const HEXIAO = numbers.filter(n => sumDigits(n) <= 6);
-            const WEIDA = numbers.filter(n => n > 24);
-            const WEIXIAO = numbers.filter(n => n <= 24);
+            const WEIDA = numbers.filter(isBig);
+            const WEIXIAO = numbers.filter(isSmall);
 
             for (let i = 1; i < 7; i++) {
                 // DAN,SHUANG,DA,XIAO,HEDAN,HESHUANG,HEDA,HEXIAO,WEIDA,WEIXIAO,HONG,LAN,LV

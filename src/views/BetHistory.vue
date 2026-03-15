@@ -51,7 +51,7 @@
                         <template #activator="{ props }">
                             <v-text-field
                                 v-bind="props"
-                                label="从"
+                                label="开始时间"
                                 variant="outlined"
                                 density="compact"
                                 readonly
@@ -77,7 +77,7 @@
                         <template #activator="{ props }">
                             <v-text-field
                                 v-bind="props"
-                                label="到"
+                                label="结束时间"
                                 variant="outlined"
                                 density="compact"
                                 readonly
@@ -109,6 +109,7 @@
                     <th>赔率</th>
                     <th>下注余额</th>
                     <th>备注</th>
+                    <th>状态</th>
                     <th>创建时间</th>
                 </tr>
             </thead>
@@ -120,6 +121,11 @@
                     <td>{{ bet.odds }}</td>
                     <td>{{ bet.bet_amount }}</td>
                     <td>{{ bet.remark }}</td>
+                    <td>
+                        <v-chip v-if="bet.is_calculated == 0">未结算</v-chip>
+                        <v-chip v-else-if="bet.is_calculated == 1" color="warning">结算中</v-chip>
+                        <v-chip v-else color="success">已结算</v-chip>
+                    </td>
                     <td>{{ $filters.formatFullDate(bet.createdAt) }}</td>
                 </tr>
             </tbody>

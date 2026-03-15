@@ -65,7 +65,7 @@ const toggleItem = (item) => {
     } else {
         selectedItems.value.splice(index, 1);
     }
-    emit('update:selectedItems', selectedItems.value);
+    emit('update:selectedItems', selectedItems.value, groupCombinations.value);
 };
 
 watch(
@@ -92,6 +92,7 @@ watch(
     () => isAddedToCart.value,
     (newVal) => {
         selectedItems.value = [];
+        emit('update:selectedItems', selectedItems.value, groupCombinations.value);
     },
     { immediate: true }
 );

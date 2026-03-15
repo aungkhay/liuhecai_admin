@@ -120,6 +120,7 @@ import ZXBZ from '../components/bets/ZXBZ.vue';
 import { useCartStore } from '../stores/bet';
 import Cart from '../components/Cart.vue';
 import { useToast } from 'vue-toastification';
+import { combinations } from '../js/common';
 
 const toast = useToast();
 const cartStore = useCartStore();
@@ -152,6 +153,7 @@ const oddsMap = ref({
     '11HX': '11肖',
 });
 const isSaving = ref(false);
+const groupCombinations = ref([]);
 
 const getCategories = async () => {
     const res = await GET_BET_CATEGORIES();
@@ -186,59 +188,62 @@ watch(tab, (newTab) => {
     }
 });
 
-const updateSelectedItems = (newSelectedItems) => {
+const updateSelectedItems = (newSelectedItems, newGroupCombinations = []) => {
     selectedItems.value = [];
     selectedItems.value = newSelectedItems;
+    groupCombinations.value = newGroupCombinations;
 };
 
 const addToCart = () => {
     const data = [];
-    const noInputItems = [
-        'TM_HX', 
-        'LXLW_2LX', 'LXLW_3LX', 'LXLW_4LX', 'LXLW_5LX', 'LXLW_2LW', 'LXLW_3LW', 'LXLW_4LW', 'LXLW_5LW',
-        'LM_3Z2', 'LM_3QZ', 'LM_2QZ', 'LM_2ZT', 'LM_TC', 'LM_4QZ', 
-        'ZXBZ'
-    ];
-    if (noInputItems.includes(sub.value.code)) {
-        let itemName = '';
-        let itemCode = '';
-        let itemOdds = selectedItems.value.length > 0 ? selectedItems.value[0].odds : 0;
-        selectedItems.value.forEach(item => {
-            itemName += item.name + ',';
-            itemCode += item.code + ',';
-        });
-        let odds = 0;
-        if (sub.value.code === 'TM_HX') {
-            odds = sub.value.odds[`${selectedItems.value.length}HX`];
-        } else if (['LM_3Z2', 'LM_3QZ', 'LM_2QZ', 'LM_2ZT', 'LM_TC', 'LM_4QZ'].includes(sub.value.code)) {
-            if (sub.value.code === 'LM_3Z2') {
-                odds = sub.value.odds['Z3'];
-            } else if (sub.value.code === 'LM_3QZ') {
-                odds = sub.value.odds['3QZ'];
-            } else if (sub.value.code === 'LM_2QZ') {
-                odds = sub.value.odds['2QZ'];
-            } else if (sub.value.code === 'LM_2ZT') {
-                odds = sub.value.odds['Z2'];
-            } else if (sub.value.code === 'LM_TC') {
-                odds = sub.value.odds['TC'];
-            } else if (sub.value.code === 'LM_4QZ') {
-                odds = sub.value.odds['4QZ'];
-            }
-        } else if (['LXLW_2LX', 'LXLW_3LX', 'LXLW_4LX', 'LXLW_5LX', 'LXLW_2LW', 'LXLW_3LW', 'LXLW_4LW', 'LXLW_5LW'].includes(sub.value.code)) {
-            odds = selectedItems.value.length > 0 ? selectedItems.value[0].odds : 0;
-        } else if (sub.value.code === 'ZXBZ') {
-            odds = sub.value.odds[`${selectedItems.value.length}BZ`];
+    // const noInputItems = [
+    //     'TM_HX', 
+    //     'LXLW_2LX', 'LXLW_3LX', 'LXLW_4LX', 'LXLW_5LX', 'LXLW_2LW', 'LXLW_3LW', 'LXLW_4LW', 'LXLW_5LW',
+    //     'LM_3Z2', 'LM_3QZ', 'LM_2QZ', 'LM_2ZT', 'LM_TC', 'LM_4QZ', 
+    //     'ZXBZ'
+    // ];
+    if (groupCombinations.value.length) {
+        for (const com of groupCombinations.value) {
+            let itemName = '';
+            let itemCode = '';
+            let odds = 0;
+            com.forEach(item => {
+                itemName += item.name + ',';
+                itemCode += item.code + ',';
+                
+                if (sub.value.code === 'TM_HX') {
+                    odds = sub.value.odds[`${selectedItems.value.length}HX`];
+                } else if (['LM_3Z2', 'LM_3QZ', 'LM_2QZ', 'LM_2ZT', 'LM_TC', 'LM_4QZ'].includes(sub.value.code)) {
+                    if (sub.value.code === 'LM_3Z2') {
+                        odds = sub.value.odds['Z3'];
+                    } else if (sub.value.code === 'LM_3QZ') {
+                        odds = sub.value.odds['3QZ'];
+                    } else if (sub.value.code === 'LM_2QZ') {
+                        odds = sub.value.odds['2QZ'];
+                    } else if (sub.value.code === 'LM_2ZT') {
+                        odds = sub.value.odds['Z2'];
+                    } else if (sub.value.code === 'LM_TC') {
+                        odds = sub.value.odds['TC'];
+                    } else if (sub.value.code === 'LM_4QZ') {
+                        odds = sub.value.odds['4QZ'];
+                    }
+                } else if (['LXLW_2LX', 'LXLW_3LX', 'LXLW_4LX', 'LXLW_5LX', 'LXLW_2LW', 'LXLW_3LW', 'LXLW_4LW', 'LXLW_5LW'].includes(sub.value.code)) {
+                    odds = selectedItems.value.length > 0 ? selectedItems.value[0].odds : 0;
+                } else if (sub.value.code === 'ZXBZ') {
+                    odds = sub.value.odds[`${selectedItems.value.length}BZ`];
+                }
+            });
+            data.push({
+                categoryId: tab.value.id,
+                categoryName: tab.value.name,
+                subCategoryId: sub.value.id,
+                subCategoryName: sub.value.name,
+                name: itemName.slice(0, -1),
+                code: itemCode.slice(0, -1),
+                odds: odds,
+                betAmount: betAmount.value,
+            });
         }
-        data.push({
-            categoryId: tab.value.id,
-            categoryName: tab.value.name,
-            subCategoryId: sub.value.id,
-            subCategoryName: sub.value.name,
-            name: itemName.slice(0, -1),
-            code: itemCode.slice(0, -1),
-            odds: odds,
-            betAmount: betAmount.value,
-        });
     } else {
         selectedItems.value.forEach(item => {
             // check code exists in cart

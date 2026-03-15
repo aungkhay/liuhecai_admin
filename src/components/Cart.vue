@@ -143,11 +143,22 @@ const doBet = () => {
     const data = carts.value.map(cart => {
         let numbers = {};
         const codes = cart.code.split(',');
+        let isGroup = false;
+        if (codes.length > 1) {
+            isGroup = true;
+        }
+        let groupName = '';
         for (const [index, code] of codes.entries()) {
             const split = code.split('_');
             let ruleName = split[0] + '_' + split[1] + '_RULES';
-            if (split[0] === 'LXLW' || split[0] === 'YXZXPTWS' || split[0] === 'ZH') {
+            groupName = split[0] + '_' + split[1];
+            if (split[0] === 'LXLW' || split[0] === 'YXZXPTWS' || split[0] === 'ZH' || split[0] === 'ZX' || split[0] === 'ZXBZ') {
                 ruleName = split[0] + '_RULES';
+                isGroup = false;
+                groupName = split[0];
+                if (split[0] === 'ZXBZ') {
+                    isGroup = true;
+                }
             }
             const newRules = rules.value[ruleName] || [];
             // console.log(ruleName, newRules)
@@ -162,24 +173,13 @@ const doBet = () => {
             }
         }
 
-        const newNumbers = [];
-        for (const key in numbers) {
-            if (!Object.hasOwn(numbers, key)) continue;
-            for (const num of numbers[key]) {
-                if (!num) continue;
-                newNumbers.push({
-                    code: key,
-                    number: num,
-                });
-            }
-        }
-
         return {
             category_id: cart.categoryId,
             sub_category_id: cart.subCategoryId,
+            is_group_bet: isGroup,
+            group_name: groupName,
             item_code: cart.code,
             item_name: cart.name,
-            numbers: newNumbers,
             odds: cart.odds,
             bet_amount: cart.betAmount,
             remark: remark.value,

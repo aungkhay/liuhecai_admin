@@ -70,7 +70,7 @@ const toggleItem = (item) => {
     } else {
         selectedItems.value.splice(index, 1);
     }
-    emit('update:selectedItems', selectedItems.value);
+    emit('update:selectedItems', selectedItems.value, groupCombinations.value);
 };
 
 watch(
@@ -96,7 +96,7 @@ watch(
     (newSub) => {
         // Clear selected items when sub changes
         selectedItems.value = [];
-        emit('update:selectedItems', selectedItems.value);
+        emit('update:selectedItems', selectedItems.value, groupCombinations.value);
     },
     { immediate: true }
 );
@@ -109,6 +109,7 @@ watch(
     () => isAddedToCart.value,
     (newVal) => {
         selectedItems.value = [];
+        emit('update:selectedItems', selectedItems.value, groupCombinations.value);
     },
     { immediate: true }
 );
