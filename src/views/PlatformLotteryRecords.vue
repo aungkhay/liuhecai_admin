@@ -48,7 +48,8 @@
                     <td>{{ $filters.formatFullDate(record.createdAt) }}</td>
                     <td>
                         <!-- <v-btn size="small" color="success" class="mr-1" @click="editRecord(record)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn> -->
-                        <v-btn size="small" color="error" :disabled="record.calculate_status != 0" @click="confirmDelete(record)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                        <v-btn size="small" variant="tonal" color="error" :disabled="record.calculate_status != 0" @click="confirmDelete(record)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                        <v-btn size="small" variant="tonal" color="success" :disabled="record.calculate_status != 0" @click="confirmCalculate(record)" class="ml-2"><v-icon>mdi-calculator</v-icon> 计算</v-btn>
                     </td>
                 </tr>
             </tbody>
@@ -198,8 +199,23 @@
                 <v-card-title>删除记录</v-card-title>
                 <v-card-text>您确定要删除这条记录吗？</v-card-text>
                 <v-card-actions class="justify-end">
-                    <v-btn variant="outlined" :disabled="isDeleting" @click="deleteDialog = false">取消</v-btn>
-                    <v-btn color="error" variant="tonal" :disabled="isDeleting" @click="deleteRecord"><v-icon class="mr-2">mdi-delete</v-icon> 删除</v-btn>
+                    <v-btn variant="tonal" :disabled="isDeleting" @click="deleteDialog = false">取消</v-btn>
+                    <v-btn color="error" variant="tonal" :disabled="isDeleting" :loading="isDeleting" @click="deleteRecord"><v-icon class="mr-2">mdi-delete</v-icon> 删除</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+        <v-dialog
+            v-model="calculateDialog"
+            width="400"
+            persistent
+        >
+            <v-card>
+                <v-card-title>计算记录</v-card-title>
+                <v-card-text>您确定要计算这条记录吗？</v-card-text>
+                <v-card-actions class="justify-end">
+                    <v-btn variant="tonal" :disabled="isCalculating" @click="calculateDialog = false;">取消</v-btn>
+                    <v-btn color="primary" variant="tonal" :disabled="isCalculating" :loading="isCalculating" @click="calculateRecord"><v-icon class="mr-2">mdi-calculator</v-icon> 计算</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -211,7 +227,7 @@ import { onMounted, ref, computed, watch } from "vue";
 import { useZodiacStore } from "../stores/zodiac";
 import { useVuelidate } from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
-import { LOTTERY_RECORDS, CREATE_LOTTERY_RECORD, UPDATE_LOTTERY_RECORD, DELETE_LOTTERY_RECORD, GET_PLATFORM_LAST_BATCH_NUMBER, CHECK_BET_NUMBERS } from "../js/api";
+import { LOTTERY_RECORDS, CREATE_LOTTERY_RECORD, UPDATE_LOTTERY_RECORD, DELETE_LOTTERY_RECORD, GET_PLATFORM_LAST_BATCH_NUMBER, CHECK_BET_NUMBERS, CALCULATE_RECORD } from "../js/api";
 import { orderZodiac } from "../js/common";
 import { useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
@@ -259,6 +275,7 @@ const allBetAmount = ref(0);
 
 const dialog = ref(null);
 const deleteDialog = ref(null);
+const calculateDialog = ref(null);
 const obj = ref({
     year: currentYear.value,
     lottery_type: lotteryType.value,
@@ -282,6 +299,7 @@ const obj = ref({
 const dateMenu = ref(false);
 const isSaving = ref(false);
 const isDeleting = ref(false);
+const isCalculating = ref(false);
 const selectedRecord = ref(null);
 const selectedId = ref(0);
 
@@ -506,6 +524,26 @@ const generateRandomNumbers = async () => {
     }
 
     generating.value = false;
+}
+
+const confirmCalculate = (record) => {
+    selectedRecord.value = record;
+    calculateDialog.value = true;
+}
+
+const calculateRecord = async () => {
+    if (isCalculating.value) return;
+    isCalculating.value = true;
+
+    const res = await CALCULATE_RECORD(selectedRecord.value.id);
+    if (res.code == 1000) {
+        calculateDialog.value = false;
+        await getRecords();
+        toast.success(res.message);
+    } else {
+        toast.error(res.message);
+    }
+    isCalculating.value = false;
 }
 
 onMounted(() => {

@@ -19,8 +19,8 @@
                         <a :href="l.url" target="_blank" style="text-decoration: none;">{{ l.url }}</a>
                     </td>
                     <td>
-                        <v-btn color="primary" size="small" class="mr-2" @click="editLink(l)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
-                        <v-btn color="error" size="small" @click="confirmDelete(l.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                        <v-btn variant="tonal" color="primary" size="small" class="mr-2" @click="editLink(l)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
+                        <v-btn variant="tonal" color="error" size="small" @click="confirmDelete(l.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
                     </td>
                 </tr>
             </tbody>

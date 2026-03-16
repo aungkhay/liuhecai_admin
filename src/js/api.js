@@ -92,6 +92,10 @@ export const UPDATE_LOTTERY_RECORD = async function (id, data) {
     return await API.post(`${prefix}/lottery-records/${id}/update`, data);
 }
 
+export const CALCULATE_RECORD = async function (id) {
+    return await API.post(`${prefix}/lottery-records/${id}/calculate`);
+}
+
 export const RESULT_GUESSES = async function (page = 1, perPage = 10) {
     return await API.get(`${prefix}/result-guesses`, {
         params: {

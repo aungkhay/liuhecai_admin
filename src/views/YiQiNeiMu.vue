@@ -33,7 +33,7 @@
                         </div>
                     </td>
                     <td>
-                        <v-btn color="primary" size="small" @click="edit(7)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
+                        <v-btn color="primary" variant="tonal" size="small" @click="edit(7)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
                     </td>
                 </tr>
                 <tr>
@@ -60,7 +60,7 @@
                         </div>
                     </td>
                     <td>
-                        <v-btn color="primary" size="small" @click="edit(5)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
+                        <v-btn color="primary" variant="tonal" size="small" @click="edit(5)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
                     </td>
                 </tr>
                 <tr>
@@ -87,7 +87,7 @@
                         </div>
                     </td>
                     <td>
-                        <v-btn color="primary" size="small" @click="edit(3)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
+                        <v-btn color="primary" variant="tonal" size="small" @click="edit(3)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
                     </td>
                 </tr>
             </tbody>

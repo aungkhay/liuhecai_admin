@@ -22,12 +22,13 @@
                     <td>{{ record.result_number == 0 ? '-' : String(record.result_number).padStart(2, '0') }} <span v-if="record.zodiac_name">{{ record.zodiac_name }}</span></td>
                     <td>
                         <v-chip v-if="record.match_color == record.color_one || record.match_color == record.color_two" color="success">准</v-chip>
+                        <v-chip v-else-if="record.match_color == null" color="warning">未开奖</v-chip>
                         <v-chip v-else color="error">不准</v-chip>
                     </td>
                     <td>{{ $filters.formatFullDate(record.createdAt) }}</td>
                     <td>
-                        <v-btn color="success" size="small" class="mr-2" @click="editRecord(record)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
-                        <v-btn color="error" size="small" @click="confirmDelete(record.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                        <v-btn variant="tonal" color="success" size="small" class="mr-2" @click="editRecord(record)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
+                        <v-btn variant="tonal" color="error" size="small" @click="confirmDelete(record.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
                     </td>
                 </tr>
             </tbody>

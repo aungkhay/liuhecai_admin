@@ -26,7 +26,7 @@
                     </td>
                     <td>{{ $filters.formatFullDate(record.createdAt) }}</td>
                     <td>
-                        <v-btn v-if="!record.is_finished" size="small" color="error" @click="deleteRecord(record.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                        <v-btn v-if="!record.is_finished" size="small" variant="tonal" color="error" @click="deleteRecord(record.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
                     </td>
                 </tr>
             </tbody>

@@ -23,12 +23,12 @@
                     <td>
                         <v-chip v-if="result.result_match == 1" color="success">准</v-chip>
                         <v-chip v-else-if="result.result_match == 2" color="error">不准</v-chip>
-                        <v-chip v-else>-</v-chip>
+                        <v-chip v-else color="warning">未开奖</v-chip>
                     </td>
                     <td>{{ $filters.formatFullDate(result.createdAt) }}</td>
                     <td>
-                        <v-btn color="success" size="small" class="mr-2" @click="editResult(result)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
-                        <v-btn color="error" size="small" @click="confirmDelete(result.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                        <!-- <v-btn color="success" size="small" class="mr-2" @click="editResult(result)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn> -->
+                        <v-btn color="error" variant="tonal" size="small" @click="confirmDelete(result.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
                     </td>
                 </tr>
             </tbody>
