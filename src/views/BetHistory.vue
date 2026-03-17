@@ -104,10 +104,12 @@
             <thead>
                 <tr>
                     <th>序列</th>
+                    <th>期号</th>
                     <th>类别</th>
                     <th>项目</th>
                     <th>赔率</th>
                     <th>下注余额</th>
+                    <th>赢亏</th>
                     <th>备注</th>
                     <th>状态</th>
                     <th>创建时间</th>
@@ -116,14 +118,23 @@
             <tbody>
                 <tr v-for="(bet, index) in bets" :key="bet.id">
                     <td>{{ (page - 1) * perPage + index + 1 }}</td>
-                    <td>{{ bet.category.name }}~<span class="text-primary">{{ bet.subCategory.name }}</span></td>
+                    <th>{{ bet.batch_number }}</th>
+                    <td>
+                        {{ bet.category.name }}~<span class="text-primary">{{ bet.subCategory.name }}</span>
+                        <div class="text-grey" style="font-size: 11px;">{{ bet.item_code }}</div>
+                    </td>
                     <td>{{ bet.item_name }}</td>
                     <td>{{ bet.odds }}</td>
                     <td>{{ bet.bet_amount }}</td>
+                    <td>
+                        <span class="text-warning" v-if="bet.is_win == 0">未结算</span>
+                        <span class="text-red" v-else-if="bet.is_win == 1">未中奖</span>
+                        <span class="text-success" v-else-if="bet.is_win == 2" color="success">中奖</span>
+                        <span class="text-grey" v-else-if="bet.is_win == 3" color="grey">和</span>
+                    </td>
                     <td>{{ bet.remark }}</td>
                     <td>
                         <v-chip v-if="bet.is_calculated == 0">未结算</v-chip>
-                        <v-chip v-else-if="bet.is_calculated == 1" color="warning">结算中</v-chip>
                         <v-chip v-else color="success">已结算</v-chip>
                     </td>
                     <td>{{ $filters.formatFullDate(bet.createdAt) }}</td>
