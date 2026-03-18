@@ -1,65 +1,47 @@
 <template>
     <div>
         <!-- <v-btn color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn> -->
-        <v-table>
-            <thead>
-                <tr>
-                    <th style="min-width: 100px;">顺序</th>
-                    <th style="min-width: 100px;">期号</th>
-                    <th style="min-width: 170px;">开奖号码</th>
-                    <th style="min-width: 170px;">开奖日期</th>
-                    <th style="min-width: 170px;">创建时间</th>
-                    <!-- <th style="min-width: 170px;">操作</th> -->
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(record, index) in records" :key="index" style="height: 60px;">
-                    <td>{{ index + 1 }}</td>
-                    <td>{{ record.batch_number.padStart(3, '0') }}</td>
-                    <td>
-                        <div class="d-flex align-center">
-                            <div v-for="n in 6" :key="n" class="d-flex flex-column align-center">
-                                <div class="circle-wrapper mr-1">
-                                    <v-img :src="getImg(record[`num${n}_desc`])" width="33" height="33" cover/>
-                                    <div class="circle-text">{{ record[`num${n}`].toString().padStart(2, '0') }}</div>
-                                </div>
-                                <div class="text-caption">{{ getZodiacName(record[`num${n}_desc`]) }}</div>
-                            </div>
-                            <div class="px-3"><v-icon>mdi-plus</v-icon></div>
-                            <div class="d-flex flex-column align-center">
-                                <div class="circle-wrapper mr-1">
-                                    <v-img :src="getImg(record.num7_desc)" width="33" height="33" cover/>
-                                    <div class="circle-text">{{ record.num7.toString().padStart(2, '0') }}</div>
-                                </div>
-                                <div class="text-caption">{{ getZodiacName(record.num7_desc) }}</div>
-                            </div>
+        <v-data-table-server
+            v-model:page="page"
+            v-model:items-per-page="perPage"
+            :headers="headers"
+            :items="records"
+            :items-length="total"
+            :loading="loading"
+            class="table1"
+            :items-per-page-options="[5, 10, 15, 20, 50]"
+            @update:options="getRecords"
+            hover
+        >
+            <template #loading>
+                <v-skeleton-loader type="table-row@3"/>
+            </template>
+            <template #item.draw_date="{ item }">
+                {{ $filters.formatDate(item.draw_date) }}
+            </template>
+            <template #item.numbers="{ item }">
+                <div class="d-flex align-center my-1">
+                    <div v-for="n in 6" :key="n" class="d-flex flex-column align-center">
+                        <div class="circle-wrapper mr-1">
+                            <v-img :src="getImg(item[`num${n}_desc`])" width="33" height="33" cover/>
+                            <div class="circle-text">{{ item[`num${n}`].toString().padStart(2, '0') }}</div>
                         </div>
-                    </td>
-                    <td>{{ $filters.formatDate(record.draw_date) }}</td>
-                    <td>{{ $filters.formatFullDate(record.createdAt) }}</td>
-                    <!-- <td>
-                        <v-btn size="small" color="success" class="mr-1" @click="editRecord(record)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
-                        <v-btn size="small" color="error" @click="confirmDelete(record)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
-                    </td> -->
-                </tr>
-            </tbody>
-        </v-table>
-
-        <div class="d-flex justify-center mt-5">
-            <v-pagination
-                v-model="page"
-                :length="totalPage"
-                :total-visible="7"
-                color="grey"
-                rounded="circle"
-                density="compact"
-                active-color="primary"
-                :show-first-last-page="true"
-                @first="goToFirst"
-                @last="goToLast"
-                @update:model-value="switchPage"
-            ></v-pagination>
-        </div>
+                        <div class="text-caption">{{ getZodiacName(item[`num${n}_desc`]) }}</div>
+                    </div>
+                    <div class="px-3"><v-icon>mdi-plus</v-icon></div>
+                    <div class="d-flex flex-column align-center">
+                        <div class="circle-wrapper mr-1">
+                            <v-img :src="getImg(item.num7_desc)" width="33" height="33" cover/>
+                            <div class="circle-text">{{ item.num7.toString().padStart(2, '0') }}</div>
+                        </div>
+                        <div class="text-caption">{{ getZodiacName(item.num7_desc) }}</div>
+                    </div>
+                </div>
+            </template>
+            <template #item.createdAt="{ item }">
+                {{ $filters.formatFullDate(item.createdAt) }}
+            </template>
+        </v-data-table-server>
 
         <v-dialog
             v-model="dialog"
@@ -217,6 +199,7 @@ const formatedYears = computed(() => {
     });
 })
 
+const loading = ref(false);
 const records = ref([]);
 const page = ref(1);
 const perPage = ref(10);
@@ -250,6 +233,13 @@ const isSaving = ref(false);
 const isDeleting = ref(false);
 const selectedRecord = ref(null);
 const selectedId = ref(0);
+const headers = ref([
+    { title: '列', value: 'index', fixed: 'start', width: 60 },
+    { title: '期号', value: 'batch_number', fixed: 'start', width: 120 },
+    { title: '开奖号码', value: 'numbers', minWidth: 300 },
+    { title: '开奖日期', value: 'draw_date', minWidth: 150 },
+    { title: '创建时间', value: 'createdAt', minWidth: 170 },
+]);
 
 const rules = ref({
     batch_number: { required: helpers.withMessage('期号不能为空', required) },
@@ -305,12 +295,17 @@ const formattedDrawDate = () => {
 }
 
 const getRecords = async () => {
+    loading.value = true;
     const res = await LOTTERY_RECORDS(page.value, perPage.value, lotteryType.value);
     if (res.code == 1000) {
-        records.value = res.data.records;
+        records.value = res.data.records.map((record, index) => ({
+            ...record,
+            index: (page.value - 1) * perPage.value + index + 1
+        }));
         total.value = res.data.meta.total;
         totalPage.value = res.data.meta.totalPage;
     }
+    loading.value = false;
 }
 
 const editRecord = (record) => {
@@ -334,18 +329,6 @@ const editRecord = (record) => {
     obj.value.num7_desc = record.num7_desc;
     obj.value.draw_date = record.draw_date;
     dialog.value = true;
-}
-
-function goToFirst() {
-    page.value = 1;
-    getRecords();
-}
-function goToLast() {
-    page.value = totalPage.value;
-    getRecords();
-}
-function switchPage() {
-    getRecords();
 }
 
 const saveRecord = async () => {

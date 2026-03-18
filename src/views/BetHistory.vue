@@ -225,7 +225,6 @@ const fetchBetHistory = async () => {
     loading.value = true;
     const res = await BET_HISTORY(page.value, perPage.value, filterObj.value);
     if (res.code == 1000) {
-        bets.value = res.data.bets;
         bets.value = res.data.bets.map((record, index) => ({
             ...record,
             index: (page.value - 1) * perPage.value + index + 1

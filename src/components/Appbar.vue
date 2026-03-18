@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-app-bar :elevation="0">
+        <v-app-bar :elevation="0" density="compact">
             <v-app-bar-nav-icon @click="switchDrawer"></v-app-bar-nav-icon>
             <v-app-bar-title class="font-weight-bold">{{ barTitle }}</v-app-bar-title>
             <v-btn icon="mdi-account" variant="flat" color="primary" class="ml-4" size="small" @click="dialog = true"></v-btn>
