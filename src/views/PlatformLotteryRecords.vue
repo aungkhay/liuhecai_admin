@@ -2,7 +2,6 @@
     <div>
         <div class="d-flex align-center mb-2">
             <v-btn color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
-            <div class="ml-4">总投注金额: <span class="text-primary font-weight-bold">{{ allBetAmount }}</span> 元</div>
         </div>
         <v-data-table-server
             v-model:page="page"
@@ -129,8 +128,20 @@
                                     </div>
                                 </div>
                                 <div class="mt-3 text-end">
-                                    <span>总下注：</span>
-                                    <span class="font-weight-bold">{{ totalBetAmount }}</span>
+                                    <div>
+                                        <span>总下注：</span>
+                                        <span class="font-weight-bold">{{ Number(totalBetAmount).toFixed(2) }}</span>
+                                    </div>
+                                    <div>
+                                        <span>总中奖：</span>
+                                        <span class="font-weight-bold">{{ Number(totalWinAmount).toFixed(2) }}</span>
+                                    </div>
+                                    <div>
+                                        <span>盈利：</span>
+                                        <span class="font-weight-bold text-success" v-if="totalProfit > 0">{{ Number(totalProfit).toFixed(2) }}</span>
+                                        <span class="font-weight-bold text-error" v-else-if="totalProfit < 0">{{ Number(totalProfit).toFixed(2) }}</span>
+                                        <span class="font-weight-bold" v-else>{{ Number(totalProfit).toFixed(2) }}</span>
+                                    </div>
                                 </div>
                             </div>
                             
@@ -244,6 +255,8 @@ const lotteryType = ref('platform');
 const lastBatchNumber = ref('');
 const generating = ref(false);
 const totalBetAmount = ref(0);
+const totalWinAmount = ref(0);
+const totalProfit = ref(0);
 
 const formatedYears = computed(() => {
     return zodiacYears.value.map(y => {
@@ -257,7 +270,6 @@ const page = ref(1);
 const perPage = ref(10);
 const totalPage = ref(0);
 const total = ref(0);
-const allBetAmount = ref(0);
 
 const dialog = ref(null);
 const deleteDialog = ref(null);
@@ -373,7 +385,6 @@ const getRecords = async () => {
         }));
         total.value = res.data.meta.total;
         totalPage.value = res.data.meta.totalPage;
-        allBetAmount.value = res.data.total_bet_amount || 0;
     }
 }
 
@@ -518,6 +529,8 @@ const generateRandomNumbers = async () => {
 
     if (res.code == 1000) {
         totalBetAmount.value = res.data.total_bet_amount;
+        totalWinAmount.value = res.data.total_win_amount;
+        totalProfit.value = res.data.profit_loss;
     } else {
         toast.error(res.message);
     }

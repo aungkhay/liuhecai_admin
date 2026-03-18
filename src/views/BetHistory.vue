@@ -47,7 +47,7 @@
                         :items="[{ id: 0, title: '否' }, { id: 1, title: '是' }]"
                         item-value="id"
                         item-title="title"
-                        label="是否计算"
+                        label="是否已计算"
                         variant="outlined"
                         density="compact"
                         v-model="filterObj.is_calculated"
@@ -58,10 +58,10 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="2">
                     <v-select
-                        :items="[{ id: 0, title: '否' }, { id: 1, title: '是' }]"
+                        :items="[{ id: 0, title: '未结算' }, { id: 1, title: '输' }, { id: 2, title: '赢' }, { id: 3, title: '和' }]"
                         item-value="id"
                         item-title="title"
-                        label="是否中奖"
+                        label="中奖状态"
                         variant="outlined"
                         density="compact"
                         v-model="filterObj.is_win"
@@ -161,15 +161,15 @@
             </template>
             <template #item.is_win="{ item }">
                 <span class="text-warning" v-if="item.is_win == 0">未结算</span>
-                <span class="text-red" v-else-if="item.is_win == 1">未中奖</span>
-                <span class="text-success" v-else-if="item.is_win == 2" color="success">中奖</span>
+                <span class="text-red" v-else-if="item.is_win == 1">客户亏</span>
+                <span class="text-success" v-else-if="item.is_win == 2" color="success">客户赢</span>
                 <span class="text-grey" v-else-if="item.is_win == 3" color="grey">和</span>
             </template>
             <template #item.bet_amount="{ item }">
-                {{ Number(item.bet_amount) }}
+                {{ Number(item.bet_amount).toFixed(2) }}
             </template>
             <template #item.win_amount="{ item }">
-                {{ Number(item.win_amount) }}
+                {{ Number(item.win_amount).toFixed(2) }}
             </template>
             <template #item.is_calculated="{ item }">
                 <v-chip v-if="item.is_calculated == 0">未结算</v-chip>
