@@ -375,7 +375,7 @@ const getRecords = async () => {
         records.value = res.data.records;
         total.value = res.data.meta.total;
         totalPage.value = res.data.meta.totalPage;
-        allBetAmount.value = res.data.total_bet_amount;
+        allBetAmount.value = res.data.total_bet_amount || 0;
     }
 }
 
@@ -507,6 +507,7 @@ const generateRandomNumbers = async () => {
         obj.value[`num${i}`] = rand;
     }
     const numbers = {
+        batch_number: obj.value.batch_number,
         num1: obj.value.num1,
         num2: obj.value.num2,
         num3: obj.value.num3,

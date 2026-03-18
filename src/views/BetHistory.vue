@@ -1,7 +1,7 @@
 <template>
     <div>
-        <v-card class="pa-4 mb-4 border" :elevation="0">
-            <v-row>
+        <v-card class="pa-2 mb-2 border" :elevation="0">
+            <v-row dense>
                 <v-col cols="12" sm="6" md="2">
                     <v-select
                         v-model="filterObj.category_id"
@@ -29,6 +29,45 @@
                         hide-details
                         clearable
                         @click:clear="filterObj.sub_category_id = null"
+                    ></v-select>
+                </v-col>
+                <v-col cols="12" sm="6" md="2">
+                    <v-text-field
+                        label="期号"
+                        variant="outlined"
+                        density="compact"
+                        v-model="filterObj.batch_number"
+                        hide-details
+                        clearable
+                        @click:clear="filterObj.batch_number = null"
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="2">
+                    <v-select
+                        :items="[{ id: 0, title: '否' }, { id: 1, title: '是' }]"
+                        item-value="id"
+                        item-title="title"
+                        label="是否计算"
+                        variant="outlined"
+                        density="compact"
+                        v-model="filterObj.is_calculated"
+                        hide-details
+                        clearable
+                        @click:clear="filterObj.is_calculated = null"
+                    ></v-select>
+                </v-col>
+                <v-col cols="12" sm="6" md="2">
+                    <v-select
+                        :items="[{ id: 0, title: '否' }, { id: 1, title: '是' }]"
+                        item-value="id"
+                        item-title="title"
+                        label="是否中奖"
+                        variant="outlined"
+                        density="compact"
+                        v-model="filterObj.is_win"
+                        hide-details
+                        clearable
+                        @click:clear="filterObj.is_win = null"
                     ></v-select>
                 </v-col>
                 <v-col cols="12" sm="6" md="2">
@@ -95,68 +134,51 @@
                     </v-menu>
                 </v-col>
                 <v-col cols="12" sm="6" md="2">
-                    <v-btn color="primary" @click="fetchBetHistory()" class="mr-2"><v-icon>mdi-magnify</v-icon>搜索</v-btn>
-                    <v-btn color="primary" @click="clearFilters()"><v-icon>mdi-refresh</v-icon>重置</v-btn>
+                    <v-btn color="primary" variant="outlined" @click="fetchBetHistory()" class="mr-2"><v-icon>mdi-magnify</v-icon>搜索</v-btn>
+                    <v-btn color="grey-darken-2" variant="outlined" @click="clearFilters()"><v-icon>mdi-refresh</v-icon>重置</v-btn>
                 </v-col>
             </v-row>
         </v-card>
-        <v-table dense>
-            <thead>
-                <tr>
-                    <th>序列</th>
-                    <th>期号</th>
-                    <th>类别</th>
-                    <th>项目</th>
-                    <th>赔率</th>
-                    <th>下注余额</th>
-                    <th>赢亏</th>
-                    <th>备注</th>
-                    <th>状态</th>
-                    <th>创建时间</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(bet, index) in bets" :key="bet.id">
-                    <td>{{ (page - 1) * perPage + index + 1 }}</td>
-                    <th>{{ bet.batch_number }}</th>
-                    <td>
-                        {{ bet.category.name }}~<span class="text-primary">{{ bet.subCategory.name }}</span>
-                        <div class="text-grey" style="font-size: 11px;">{{ bet.item_code }}</div>
-                    </td>
-                    <td>{{ bet.item_name }}</td>
-                    <td>{{ bet.odds }}</td>
-                    <td>{{ bet.bet_amount }}</td>
-                    <td>
-                        <span class="text-warning" v-if="bet.is_win == 0">未结算</span>
-                        <span class="text-red" v-else-if="bet.is_win == 1">未中奖</span>
-                        <span class="text-success" v-else-if="bet.is_win == 2" color="success">中奖</span>
-                        <span class="text-grey" v-else-if="bet.is_win == 3" color="grey">和</span>
-                    </td>
-                    <td>{{ bet.remark }}</td>
-                    <td>
-                        <v-chip v-if="bet.is_calculated == 0">未结算</v-chip>
-                        <v-chip v-else color="success">已结算</v-chip>
-                    </td>
-                    <td>{{ $filters.formatFullDate(bet.createdAt) }}</td>
-                </tr>
-            </tbody>
-        </v-table>
 
-        <div class="d-flex justify-center mt-5">
-            <v-pagination
-                v-model="page"
-                :length="totalPage"
-                :total-visible="7"
-                color="grey"
-                rounded="circle"
-                density="compact"
-                active-color="primary"
-                :show-first-last-page="true"
-                @first="goToFirst"
-                @last="goToLast"
-                @update:model-value="switchPage"
-            ></v-pagination>
-        </div>
+        <v-data-table-server
+            v-model:page="page"
+            v-model:items-per-page="perPage"
+            :headers="headers"
+            :items="bets"
+            :items-length="total"
+            :loading="loading"
+            class="table1"
+            :items-per-page-options="[5, 10, 15, 20, 50]"
+            @update:options="fetchBetHistory"
+            hover
+        >
+            <template #loading>
+                <v-skeleton-loader type="table-row@3"/>
+            </template>
+            <template #item.category="{ item }">
+                {{ item.category.name }}~<span class="text-primary">{{ item.subCategory.name }}</span>
+                <div class="text-grey" style="font-size: 11px;">{{ item.item_code }}</div>
+            </template>
+            <template #item.is_win="{ item }">
+                <span class="text-warning" v-if="item.is_win == 0">未结算</span>
+                <span class="text-red" v-else-if="item.is_win == 1">未中奖</span>
+                <span class="text-success" v-else-if="item.is_win == 2" color="success">中奖</span>
+                <span class="text-grey" v-else-if="item.is_win == 3" color="grey">和</span>
+            </template>
+            <template #item.bet_amount="{ item }">
+                {{ Number(item.bet_amount) }}
+            </template>
+            <template #item.win_amount="{ item }">
+                {{ Number(item.win_amount) }}
+            </template>
+            <template #item.is_calculated="{ item }">
+                <v-chip v-if="item.is_calculated == 0">未结算</v-chip>
+                <v-chip v-else color="success">已结算</v-chip>
+            </template>
+            <template #item.createdAt="{ item }">
+                {{ $filters.formatFullDate(item.createdAt) }}
+            </template>
+        </v-data-table-server>
     </div>
 </template>
 
@@ -165,6 +187,7 @@ import { onMounted, ref } from 'vue';
 import { BET_HISTORY, GET_BET_CATEGORIES } from '../js/api';
 import { formattedDate } from '../js/common';
 
+const loading = ref(false);
 const bets = ref([]);
 const page = ref(1);
 const perPage = ref(10);
@@ -180,28 +203,38 @@ const filterObj = ref({
     remark: null,
     fromDate: null,
     toDate: null,
+    batch_number: null,
+    is_win: null,
+    is_calculated: null,
 });
+const headers = ref([
+    { title: '列', value: 'index', fixed: 'start', width: 60 },
+    { title: '期号', value: 'batch_number', fixed: 'start', width: 120 },
+    { title: '类别', value: 'category', minWidth: 150 },
+    { title: '项目', value: 'item_name', minWidth: 150 },
+    { title: '赔率', value: 'odds', minWidth: 100 },
+    { title: '下注金额', value: 'bet_amount', minWidth: 100 },
+    { title: '赢亏', value: 'is_win', minWidth: 100 },
+    { title: '赢得金额', value: 'win_amount', minWidth: 100 },
+    { title: '备注', value: 'remark', minWidth: 150 },
+    { title: '状态', value: 'is_calculated', minWidth: 100 },
+    { title: '创建时间', value: 'createdAt', minWidth: 170 },
+]);
 
 const fetchBetHistory = async () => {
+    loading.value = true;
     const res = await BET_HISTORY(page.value, perPage.value, filterObj.value);
     if (res.code == 1000) {
         bets.value = res.data.bets;
+        bets.value = res.data.bets.map((record, index) => ({
+            ...record,
+            index: (page.value - 1) * perPage.value + index + 1
+        }));
         total.value = res.data.meta.total;
         totalPage.value = res.data.meta.totalPage;
     }
+    loading.value = false;
 };
-
-function goToFirst() {
-    page.value = 1;
-    fetchBetHistory();
-}
-function goToLast() {
-    page.value = totalPage.value;
-    fetchBetHistory();
-}
-function switchPage() {
-    fetchBetHistory();
-}
 
 const fetchCategories = async () => {
     const res = await GET_BET_CATEGORIES();
@@ -226,6 +259,9 @@ const clearFilters = () => {
         remark: null,
         fromDate: null,
         toDate: null,
+        batch_number: null,
+        is_win: null,
+        is_calculated: null,
     };
     subCategories.value = [];
     page.value = 1;

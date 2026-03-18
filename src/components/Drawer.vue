@@ -6,6 +6,8 @@
             expand-on-hover
             :rail="isDrawerOpen == 2"
             style="box-shadow: 1px 0px 7px 1px #00000020;"
+            theme="dark"
+            image="https://cdn.vuetifyjs.com/images/backgrounds/bg-2.jpg"
         >
             <v-list-item style="background-color: var(--list-group-active);" height="64" title="管理面板"></v-list-item>
 
