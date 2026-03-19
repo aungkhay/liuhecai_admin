@@ -178,6 +178,17 @@
             <template #item.createdAt="{ item }">
                 {{ $filters.formatFullDate(item.createdAt) }}
             </template>
+            <template v-slot:body.append>
+                <tr style="background-color: #d4d4d4;">
+                    <td colspan="11">
+                        <div>
+                            <span>总下注：<span class="font-weight-bold">{{ Number(totalBetAmount).toFixed(2) }}</span></span>
+                            <span class="mx-2">总中奖：<span class="font-weight-bold">{{ Number(totalWinAmount).toFixed(2) }}</span></span>
+                            <span>盈利：<span class="font-weight-bold">{{ Number(profitAmount).toFixed(2) }}</span></span>
+                        </div>
+                    </td>
+                </tr>
+            </template>
         </v-data-table-server>
     </div>
 </template>
@@ -189,6 +200,9 @@ import { formattedDate } from '../js/common';
 
 const loading = ref(false);
 const bets = ref([]);
+const totalBetAmount = ref(0);
+const totalWinAmount = ref(0);
+const profitAmount = ref(0);
 const page = ref(1);
 const perPage = ref(10);
 const total = ref(0);
@@ -231,6 +245,9 @@ const fetchBetHistory = async () => {
         }));
         total.value = res.data.meta.total;
         totalPage.value = res.data.meta.totalPage;
+        totalBetAmount.value = res.data.total_bet_amount || 0;
+        totalWinAmount.value = res.data.total_win_amount || 0;
+        profitAmount.value = res.data.profit_amount || 0;
     }
     loading.value = false;
 };
