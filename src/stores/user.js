@@ -6,6 +6,8 @@ export const useUserStore = defineStore('user', {
         isLoggedIn: localStorage.getItem('_token_') ? true : false,
 		filePath: import.meta.env.VITE_FILE_PATH,
         profile: {},
+		isSuperAdmin: false,
+		permissions: [],
         barTitle: 'Domain',
         isDrawerOpen: 1,
         innerWidth: 0,
@@ -25,6 +27,8 @@ export const useUserStore = defineStore('user', {
 		},
         setProfile(payload) {
 			this.profile = payload;
+			this.isSuperAdmin = payload.id == 1; // Assuming user with ID 1 is super admin
+			this.permissions = payload.permissions || [];
 		},
 		setInnerWidth() {
 			if(window.innerWidth < 768 && window.innerWidth > 640) {

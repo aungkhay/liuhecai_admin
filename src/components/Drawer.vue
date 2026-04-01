@@ -16,6 +16,7 @@
                         :value="item.title"
                         :collapse-icon="item.children?.length > 0 ? 'mdi-chevron-up' : null"
                         :expand-icon="item.children?.length > 0 ? 'mdi-chevron-down' : null"
+                        v-if="checkDrawerPermissions(item.permissions)"
                     >
                         <template v-slot:activator="{ props }">
                             <v-list-item 
@@ -39,6 +40,7 @@
                                 color="primary"
                                 @click="changeRoute(index, i)"
                                 :height="50"
+                                v-if="checkPermission(child.permission)"
                             ></v-list-item>
                         </div>
                         
@@ -78,12 +80,15 @@ import { useDisplay } from 'vuetify';
 import router from '@/routers';
 import { LOGOUT } from '@/js/api';
 import { useUserStore } from '../stores/user';
+import { checkPermission } from '@/js/common';
 
 const userStore = useUserStore();
 const { xs } = useDisplay();
 const isDrawerOpen = computed(() => userStore.isDrawerOpen);
 const innerWidth = computed(() => userStore.innerWidth);
 const currentRoute = computed(() => userStore.currentRoute);
+const isSuperAdmin = computed(() => userStore.isSuperAdmin); 
+const permissions = computed(() => userStore.permissions);
 const dialog = ref(false);
 const drawer = ref(null);
 const isLoading = ref(false);
@@ -94,35 +99,56 @@ const drawerItems = ref([
         icon: 'mdi-view-dashboard', 
         routeName: 'dashboard', 
         isSelected: false,
+        permissions: []
     },
     {
         title: '轮播图管理',
         icon: 'mdi-image-multiple',
         routeName: 'banner',
         isSelected: false,
+        permissions: []
+    },
+    {
+        title: '系统管理',
+        icon: 'mdi-account-cog',
+        isSelected: false,
+        permissions: [],
+        children: [
+            { 
+                title: '角色管理', 
+                icon: 'mdi-view-list', 
+                routeName: 'role-permission', 
+                isSelected: false,
+                permission: 'role-list',
+            },
+        ]
     },
     {
         title: '开奖记录',
         icon: 'mdi-view-list',
         isSelected: false,
+        permissions: [],
         children: [
             { 
                 title: '平台开奖记录', 
                 icon: 'mdi-view-list', 
                 routeName: 'platform-lottery-records', 
                 isSelected: false,
+                permission: '',
             },
             { 
                 title: '澳门开奖记录', 
                 icon: 'mdi-view-list', 
                 routeName: 'aomen-lottery-records', 
                 isSelected: false,
+                permission: '',
             },
             { 
                 title: '香港开奖记录', 
                 icon: 'mdi-view-list', 
                 routeName: 'hongkong-lottery-records', 
                 isSelected: false,
+                permission: '',
             },
         ]
     },
@@ -130,36 +156,42 @@ const drawerItems = ref([
         title: '结果猜测', 
         icon: 'mdi-view-list', 
         isSelected: false,
+        permissions: [],
         children: [
             {
                 title: '发什么开什么',
                 icon: 'mdi-circle-small',
                 routeName: 'result-guess',
                 isSelected: false,
+                permission: '',
             },
             {
                 title: '一期内幕',
                 icon: 'mdi-circle-small',
                 routeName: 'yi-qi-nei-mu',
                 isSelected: false,
+                permission: '',
             },
             {
                 title: '投资平特',
                 icon: 'mdi-circle-small',
                 routeName: 'tou-zi-ping-te',
                 isSelected: false,
+                permission: '',
             },
             {
                 title: '大神双波',
                 icon: 'mdi-circle-small',
                 routeName: 'double-color',
                 isSelected: false,
+                permission: '',
             },
             {
                 title: '参考链接',
                 icon: 'mdi-circle-small',
                 routeName: 'reference-link',
                 isSelected: false,
+                permission: '',
             },
         ],
     },
@@ -168,12 +200,14 @@ const drawerItems = ref([
         icon: 'mdi-cash-multiple',
         routeName: 'do-bet',
         isSelected: false,
+        permissions: [],
     },
     {
         title: '下注记录',
         icon: 'mdi-history',
         routeName: 'bet-history',
         isSelected: false,
+        permissions: [],
     }
 ]);
 
@@ -233,6 +267,20 @@ watch(
     },
     { immediate: true, deep: true }
 )
+
+const checkDrawerPermissions = (perms) => {
+    if(isSuperAdmin.value) return true;
+
+    for (let i = 0; i < permissions.value.length; i++) {
+        const perm = permissions.value[i];
+        
+        if(perms.includes(perm)) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 async function logout() {
     isLoading.value = true;

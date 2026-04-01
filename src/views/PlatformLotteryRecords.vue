@@ -48,6 +48,9 @@
             <template #item.createdAt="{ item }">
                 {{ $filters.formatFullDate(item.createdAt) }}
             </template>
+            <template #item.operator="{ item }">
+                {{ item.admin ? item.admin.name : '-' }}
+            </template>
             <template #item.actions="{ item }">
                 <v-btn size="small" variant="tonal" color="error" :disabled="item.calculate_status != 0" @click="confirmDelete(item)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
                 <v-btn size="small" variant="tonal" color="success" :disabled="item.calculate_status != 0" @click="confirmCalculate(item)" class="ml-2"><v-icon>mdi-calculator</v-icon> 计算</v-btn>
@@ -87,7 +90,6 @@
                                 :error-messages="v$.batch_number.$errors.map(e => e.$message)"
                                 @input="v$.batch_number.$touch"
                                 @blur="v$.batch_number.$touch"
-                                readonly
                             ></v-text-field>
                         </v-col>
                         <v-col cols="6">
@@ -307,6 +309,7 @@ const headers = ref([
     { title: '开奖日期', value: 'draw_date', minWidth: 150 },
     { title: '计算状态', value: 'calculate_status', minWidth: 120 },
     { title: '创建时间', value: 'createdAt', minWidth: 170 },
+    { title: '操作员', value: 'operator', minWidth: 120 },
     { title: '操作', value: 'actions', minWidth: 200 },
 ]);
 

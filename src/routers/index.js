@@ -29,6 +29,14 @@ const routes = [
                 }
             },
             {
+                path: prefix + '/role-permission',
+                name: 'role-permission',
+                component: () => import('../views/RolePermission.vue'),
+                meta: {
+                    title: '角色管理',
+                }
+            },
+            {
                 path: prefix + '/banner',
                 name: 'banner',
                 component: () => import('../views/Banner.vue'),

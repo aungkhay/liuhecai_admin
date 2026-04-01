@@ -1,3 +1,5 @@
+import { useUserStore } from "../stores/user"
+
 export const formattedDate = (date) => {
     if (!date) return ''
 
@@ -43,4 +45,12 @@ export const combinations = (arr, k) => {
 
     backtrack(0, []);
     return result;
+}
+
+export const checkPermission = (perm) => {
+    const userStore = useUserStore();
+    const isSuperAdmin = userStore.isSuperAdmin;
+    const permissions = userStore.permissions;
+
+    return isSuperAdmin || permissions.includes(perm);
 }

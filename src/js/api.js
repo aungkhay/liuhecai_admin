@@ -229,3 +229,31 @@ export const UPLOAD_REFERENCE_LINK_IMAGE = async (id, formData) => {
     }
     return API(config);
 }
+
+export const ROLE_LIST = async () => {
+    return await API.get(`${prefix}/roles/list`);
+}
+
+export const PERMISSION_LIST = async () => {
+    return await API.get(`${prefix}/roles/permission-list`);
+}
+
+export const ROLE_PERMISSIONS = async (id) => {
+    return await API.get(`${prefix}/roles/${id}/permissions`);
+}
+
+export const CREATE_ROLE = async (data) => {
+    return await API.post(`${prefix}/roles/create`, data);
+}
+
+export const UPDATE_ROLE = async (id, data) => {
+    return await API.post(`${prefix}/roles/${id}/update`, data);
+}
+
+export const DELETE_ROLE = async (id) => {
+    return await API.post(`${prefix}/roles/${id}/delete`);
+}
+
+export const ASSIGN_ROLE_PERMISSIONS = async (id, permissionIds) => {
+    return await API.post(`${prefix}/roles/${id}/assign-permissions`, { permissionIds });
+}
