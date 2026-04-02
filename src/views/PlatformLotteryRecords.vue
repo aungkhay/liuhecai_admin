@@ -273,6 +273,7 @@ const page = ref(1);
 const perPage = ref(10);
 const totalPage = ref(0);
 const total = ref(0);
+const lastRecord = ref(null);
 
 const dialog = ref(null);
 const deleteDialog = ref(null);
@@ -390,6 +391,7 @@ const getRecords = async () => {
         }));
         total.value = res.data.meta.total;
         totalPage.value = res.data.meta.totalPage;
+        lastRecord.value = res.data.last_record;
     }
 }
 
@@ -516,10 +518,26 @@ const fetchLastBatchNumber = async () => {
 
 const generateRandomNumbers = async () => {
     generating.value = true;
-    for (let i = 1; i <= 7; i++) {
-       const rand = Math.floor(Math.random() * 49) + 1;
-        obj.value[`num${i}`] = rand;
+
+    const allNums = [];
+    while (allNums.length < 7) {
+        const rand = Math.floor(Math.random() * 49) + 1;
+        // rand number must not be duplicated with last record's numbers
+        if (lastRecord.value) {
+            const lastNums = [lastRecord.value.num1, lastRecord.value.num2, lastRecord.value.num3, lastRecord.value.num4, lastRecord.value.num5, lastRecord.value.num6, lastRecord.value.num7];
+            if (lastNums.includes(rand)) {
+                continue;
+            }
+        }
+        if (!allNums.includes(rand)) {
+            allNums.push(rand);
+        }
     }
+
+    for (let i = 0; i < allNums.length; i++) {
+        obj.value[`num${i + 1}`] = allNums[i];
+    }
+
     const numbers = {
         batch_number: obj.value.batch_number,
         num1: obj.value.num1,
