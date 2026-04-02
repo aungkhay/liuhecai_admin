@@ -131,6 +131,14 @@ const routes = [
                 meta: {
                     title: '下注记录',
                 }
+            },
+            {
+                path: prefix + '/log',
+                name: 'log',
+                component: () => import('../views/Log.vue'),
+                meta: {
+                    title: '操作日志',
+                }
             }
         ]
     }

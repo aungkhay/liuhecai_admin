@@ -283,3 +283,9 @@ export const DELETE_USER = async (id) => {
 export const ASSIGN_USER_ROLES = async (id, roleIds) => {
     return await API.post(`${prefix}/users/${id}/assign-roles`, { roleIds });
 }
+
+export const LOG_LIST = async (filters = {}) => {
+    return await API.get(`${prefix}/logs`, {
+        params: filters
+    });
+}

@@ -224,6 +224,13 @@ const drawerItems = ref([
             }
         ]
     },
+    { 
+        title: '操作日志', 
+        icon: 'mdi-file-document-edit', 
+        routeName: 'log', 
+        isSelected: false,
+        permissions: ['log-list']
+    },
 ]);
 
 function setDrawerActive(parentIndex, childIndex) {

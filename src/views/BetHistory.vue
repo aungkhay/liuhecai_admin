@@ -165,6 +165,9 @@
                 <span class="text-success" v-else-if="item.is_win == 2" color="success">客户赢</span>
                 <span class="text-grey" v-else-if="item.is_win == 3" color="grey">和</span>
             </template>
+            <template #item.user="{ item }">
+                {{ item.user ? item.user.name : '-' }}
+            </template>
             <template #item.bet_amount="{ item }">
                 {{ Number(item.bet_amount).toFixed(2) }}
             </template>
@@ -180,7 +183,7 @@
             </template>
             <template v-slot:body.append>
                 <tr style="background-color: #d4d4d4;">
-                    <td colspan="11">
+                    <td colspan="12">
                         <div>
                             <span>总下注：<span class="font-weight-bold">{{ Number(totalBetAmount).toFixed(2) }}</span></span>
                             <span class="mx-2">总中奖：<span class="font-weight-bold">{{ Number(totalWinAmount).toFixed(2) }}</span></span>
@@ -224,6 +227,7 @@ const filterObj = ref({
 const headers = ref([
     { title: '列', value: 'index', fixed: 'start', width: 60 },
     { title: '期号', value: 'batch_number', fixed: 'start', width: 120 },
+    { title: '操作人员', value: 'user', fixed: 'start', minWidth: 120 },
     { title: '类别', value: 'category', minWidth: 150 },
     { title: '项目', value: 'item_name', minWidth: 150 },
     { title: '赔率', value: 'odds', minWidth: 100 },
