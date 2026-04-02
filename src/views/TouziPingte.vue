@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-btn color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
+        <v-btn v-if="checkPermission('touzi-pingte-create')" color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
 
         <v-table>
             <thead>
@@ -26,7 +26,7 @@
                     </td>
                     <td>{{ $filters.formatFullDate(record.createdAt) }}</td>
                     <td>
-                        <v-btn v-if="!record.is_finished" size="small" variant="tonal" color="error" @click="deleteRecord(record.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                        <v-btn v-if="checkPermission('touzi-pingte-delete') && !record.is_finished" size="small" variant="tonal" color="error" @click="deleteRecord(record.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
                     </td>
                 </tr>
             </tbody>
@@ -105,6 +105,7 @@ import { useZodiacStore } from '../stores/zodiac';
 import { useVuelidate } from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
 import { useToast } from 'vue-toastification';
+import { checkPermission } from '../js/common';
 
 const toast = useToast();
 const zodiacStore = useZodiacStore();

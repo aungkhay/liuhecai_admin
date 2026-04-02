@@ -83,7 +83,7 @@
                         class="mt-1"
                     ></v-text-field>
                 </div>
-                <div class="d-flex flex-column ml-1">
+                <div class="d-flex flex-column ml-1" v-if="checkPermission('bet-do-bet')">
                     <v-btn-group variant="outlined" divided>
                         <v-btn size="small" @click="addToCart" :disabled="selectedItems.length < sub?.limit_bet_count || (sub?.code === 'ZXBZ' && selectedItems.length > 9)">加入 <v-icon>mdi-forward</v-icon></v-btn>
                         <v-btn size="small" @click="showCart = true">购彩蓝 <span class="text-red mt-1 font-weight-bold">{{ carts.length }}</span></v-btn>
@@ -121,6 +121,7 @@ import { useCartStore } from '../stores/bet';
 import Cart from '../components/Cart.vue';
 import { useToast } from 'vue-toastification';
 import { combinations } from '../js/common';
+import { checkPermission } from '../js/common';
 
 const toast = useToast();
 const cartStore = useCartStore();

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-btn color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
+        <v-btn v-if="checkPermission('reference-link-create')" color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
 
         <v-table dense>
             <thead>
@@ -19,8 +19,8 @@
                         <a :href="l.url" target="_blank" style="text-decoration: none;">{{ l.url }}</a>
                     </td>
                     <td>
-                        <v-btn variant="tonal" color="primary" size="small" class="mr-2" @click="editLink(l)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
-                        <v-btn variant="tonal" color="error" size="small" @click="confirmDelete(l.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                        <v-btn v-if="checkPermission('reference-link-update')" variant="tonal" color="primary" size="small" class="mr-2" @click="editLink(l)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
+                        <v-btn v-if="checkPermission('reference-link-delete')" variant="tonal" color="error" size="small" @click="confirmDelete(l.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
                     </td>
                 </tr>
             </tbody>
@@ -76,6 +76,7 @@ import { useUserStore } from '../stores/user';
 import { useVuelidate } from '@vuelidate/core';
 import { required, helpers, url } from '@vuelidate/validators';
 import { useToast } from 'vue-toastification';
+import { checkPermission } from '../js/common';
 
 const toast = useToast();
 const userStore = useUserStore();

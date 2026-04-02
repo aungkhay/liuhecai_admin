@@ -37,6 +37,14 @@ const routes = [
                 }
             },
             {
+                path: prefix + '/users',
+                name: 'users',
+                component: () => import('../views/User.vue'),
+                meta: {
+                    title: '用户管理',
+                }
+            },
+            {
                 path: prefix + '/banner',
                 name: 'banner',
                 component: () => import('../views/Banner.vue'),

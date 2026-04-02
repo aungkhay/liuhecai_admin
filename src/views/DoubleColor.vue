@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-btn color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
+        <v-btn v-if="checkPermission('double-color-create')" color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
 
         <v-table>
             <thead>
@@ -27,8 +27,8 @@
                     </td>
                     <td>{{ $filters.formatFullDate(record.createdAt) }}</td>
                     <td>
-                        <v-btn variant="tonal" color="success" size="small" class="mr-2" @click="editRecord(record)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
-                        <v-btn variant="tonal" color="error" size="small" @click="confirmDelete(record.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                        <v-btn v-if="checkPermission('double-color-update')" variant="tonal" color="success" size="small" class="mr-2" @click="editRecord(record)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
+                        <v-btn v-if="checkPermission('double-color-delete')" variant="tonal" color="error" size="small" @click="confirmDelete(record.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
                     </td>
                 </tr>
             </tbody>
@@ -130,6 +130,7 @@ import { GET_DOUBLE_COLOR, CREATE_DOUBLE_COLOR, UPDATE_DOUBLE_COLOR, DELETE_DOUB
 import { useVuelidate } from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
 import { useToast } from 'vue-toastification';
+import { checkPermission } from '../js/common';
 
 const toast = useToast();
 const records = ref([]);

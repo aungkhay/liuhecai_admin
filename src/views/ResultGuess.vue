@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-btn color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
+        <v-btn v-if="checkPermission('result-guess-create')" color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
 
         <v-table>
             <thead>
@@ -28,7 +28,7 @@
                     <td>{{ $filters.formatFullDate(result.createdAt) }}</td>
                     <td>
                         <!-- <v-btn color="success" size="small" class="mr-2" @click="editResult(result)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn> -->
-                        <v-btn color="error" variant="tonal" size="small" @click="confirmDelete(result.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                        <v-btn v-if="checkPermission('result-guess-delete')" color="error" variant="tonal" size="small" @click="confirmDelete(result.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
                     </td>
                 </tr>
             </tbody>
@@ -112,6 +112,7 @@ import { useVuelidate } from '@vuelidate/core';
 import { required, helpers } from '@vuelidate/validators';
 import { CREATE_RESULT_GUESS, DELETE_RESULT_GUESS, RESULT_GUESSES, UPDATE_RESULT_GUESS, GET_PLATFORM_LAST_BATCH_NUMBER } from '../js/api';
 import { useToast } from 'vue-toastification';
+import { checkPermission } from '../js/common';
 
 const zodiacStore = useZodiacStore();
 const xAttributes = zodiacStore.getXAttributes;

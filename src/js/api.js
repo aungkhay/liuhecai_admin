@@ -257,3 +257,29 @@ export const DELETE_ROLE = async (id) => {
 export const ASSIGN_ROLE_PERMISSIONS = async (id, permissionIds) => {
     return await API.post(`${prefix}/roles/${id}/assign-permissions`, { permissionIds });
 }
+
+export const GET_USERS = async (filters = {}) => {
+    return await API.get(`${prefix}/users`, {
+        params: filters
+    });
+}
+
+export const CREATE_USER = async (data) => {
+    return await API.post(`${prefix}/users/create`, data);
+}
+
+export const CHANGE_USER_PASSWORD = async (id, newPassword) => {
+    return await API.post(`${prefix}/users/${id}/change-password`, { new_password: newPassword });
+}
+
+export const CHANGE_USER_STATUS = async (id) => {
+    return await API.post(`${prefix}/users/${id}/change-status`);
+}
+
+export const DELETE_USER = async (id) => {
+    return await API.post(`${prefix}/users/${id}/delete`);
+}
+
+export const ASSIGN_USER_ROLES = async (id, roleIds) => {
+    return await API.post(`${prefix}/users/${id}/assign-roles`, { roleIds });
+}

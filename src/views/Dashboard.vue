@@ -25,6 +25,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { BET_SUMMARY } from '../js/api';
+import { checkPermission } from '../js/common';
 
 const summary = ref({});
 const totalAmount = ref(0);
@@ -70,6 +71,8 @@ const fetchSummary = async () => {
 };
 
 onMounted(() => {
-    fetchSummary();
+    if (checkPermission('bet-summary')) {
+        fetchSummary();
+    }
 });
 </script>

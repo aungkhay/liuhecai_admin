@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="d-flex align-center mb-2">
-            <v-btn color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
+            <v-btn v-if="checkPermission('record-create')" color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
         </div>
         <v-data-table-server
             v-model:page="page"
@@ -52,8 +52,8 @@
                 {{ item.admin ? item.admin.name : '-' }}
             </template>
             <template #item.actions="{ item }">
-                <v-btn size="small" variant="tonal" color="error" :disabled="item.calculate_status != 0" @click="confirmDelete(item)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
-                <v-btn size="small" variant="tonal" color="success" :disabled="item.calculate_status != 0" @click="confirmCalculate(item)" class="ml-2"><v-icon>mdi-calculator</v-icon> 计算</v-btn>
+                <v-btn v-if="checkPermission('record-delete')" size="small" variant="tonal" color="error" :disabled="item.calculate_status != 0" @click="confirmDelete(item)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                <v-btn v-if="checkPermission('record-calculate')" size="small" variant="tonal" color="success" :disabled="item.calculate_status != 0" @click="confirmCalculate(item)" class="ml-2"><v-icon>mdi-calculator</v-icon> 计算</v-btn>
             </template>
         </v-data-table-server>
 
@@ -229,6 +229,7 @@ import { LOTTERY_RECORDS, CREATE_LOTTERY_RECORD, UPDATE_LOTTERY_RECORD, DELETE_L
 import { orderZodiac } from "../js/common";
 import { useRoute } from "vue-router";
 import { useToast } from "vue-toastification";
+import { checkPermission } from "../js/common";
 
 const toast = useToast();
 const zodiacStore = useZodiacStore();

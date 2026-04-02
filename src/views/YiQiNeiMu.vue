@@ -33,7 +33,7 @@
                         </div>
                     </td>
                     <td>
-                        <v-btn color="primary" variant="tonal" size="small" @click="edit(7)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
+                        <v-btn v-if="checkPermission('config-update')" color="primary" variant="tonal" size="small" @click="edit(7)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
                     </td>
                 </tr>
                 <tr>
@@ -60,7 +60,7 @@
                         </div>
                     </td>
                     <td>
-                        <v-btn color="primary" variant="tonal" size="small" @click="edit(5)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
+                        <v-btn v-if="checkPermission('config-update')" color="primary" variant="tonal" size="small" @click="edit(5)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
                     </td>
                 </tr>
                 <tr>
@@ -87,7 +87,7 @@
                         </div>
                     </td>
                     <td>
-                        <v-btn color="primary" variant="tonal" size="small" @click="edit(3)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
+                        <v-btn v-if="checkPermission('config-update')" color="primary" variant="tonal" size="small" @click="edit(3)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
                     </td>
                 </tr>
             </tbody>
@@ -249,6 +249,7 @@ import { required, helpers } from '@vuelidate/validators';
 import { useZodiacStore } from '../stores/zodiac';
 import { UPDATE_QI_XIAO, UPDATE_WU_XIAO, UPDATE_SAN_XIAO, GET_XIAO_MA } from '../js/api'; 
 import { useToast } from 'vue-toastification';
+import { checkPermission } from '../js/common';
 
 const toast = useToast();
 const zodiacStore = useZodiacStore();

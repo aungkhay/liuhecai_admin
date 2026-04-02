@@ -106,13 +106,13 @@ const drawerItems = ref([
         icon: 'mdi-image-multiple',
         routeName: 'banner',
         isSelected: false,
-        permissions: []
+        permissions: ['banner-list']
     },
     {
         title: '系统管理',
         icon: 'mdi-account-cog',
         isSelected: false,
-        permissions: [],
+        permissions: ['role-list', 'user-list'],
         children: [
             { 
                 title: '角色管理', 
@@ -121,34 +121,41 @@ const drawerItems = ref([
                 isSelected: false,
                 permission: 'role-list',
             },
+            { 
+                title: '用户管理', 
+                icon: 'mdi-view-list', 
+                routeName: 'users', 
+                isSelected: false,
+                permission: 'user-list',
+            },
         ]
     },
     {
         title: '开奖记录',
         icon: 'mdi-view-list',
         isSelected: false,
-        permissions: [],
+        permissions: ['record-list'],
         children: [
             { 
                 title: '平台开奖记录', 
                 icon: 'mdi-view-list', 
                 routeName: 'platform-lottery-records', 
                 isSelected: false,
-                permission: '',
+                permission: 'record-list',
             },
             { 
                 title: '澳门开奖记录', 
                 icon: 'mdi-view-list', 
                 routeName: 'aomen-lottery-records', 
                 isSelected: false,
-                permission: '',
+                permission: 'record-list',
             },
             { 
                 title: '香港开奖记录', 
                 icon: 'mdi-view-list', 
                 routeName: 'hongkong-lottery-records', 
                 isSelected: false,
-                permission: '',
+                permission: 'record-list',
             },
         ]
     },
@@ -156,59 +163,67 @@ const drawerItems = ref([
         title: '结果猜测', 
         icon: 'mdi-view-list', 
         isSelected: false,
-        permissions: [],
+        permissions: ['result-guess-list', 'config-list', 'touzi-pingte-list', 'double-color-list', 'reference-link-list'],
         children: [
             {
                 title: '发什么开什么',
                 icon: 'mdi-circle-small',
                 routeName: 'result-guess',
                 isSelected: false,
-                permission: '',
+                permission: 'result-guess-list',
             },
             {
                 title: '一期内幕',
                 icon: 'mdi-circle-small',
                 routeName: 'yi-qi-nei-mu',
                 isSelected: false,
-                permission: '',
+                permission: 'config-list',
             },
             {
                 title: '投资平特',
                 icon: 'mdi-circle-small',
                 routeName: 'tou-zi-ping-te',
                 isSelected: false,
-                permission: '',
+                permission: 'touzi-pingte-list',
             },
             {
                 title: '大神双波',
                 icon: 'mdi-circle-small',
                 routeName: 'double-color',
                 isSelected: false,
-                permission: '',
+                permission: 'double-color-list',
             },
             {
                 title: '参考链接',
                 icon: 'mdi-circle-small',
                 routeName: 'reference-link',
                 isSelected: false,
-                permission: '',
+                permission: 'reference-link-list',
             },
         ],
     },
     {
-        title: '下注',
+        title: '下注管理',
         icon: 'mdi-cash-multiple',
-        routeName: 'do-bet',
         isSelected: false,
-        permissions: [],
+        permissions: ['bet-list', 'bet-history'],
+        children: [
+            {
+                title: '下注',
+                icon: 'mdi-cash-multiple',
+                routeName: 'do-bet',
+                isSelected: false,
+                permission: 'bet-list',
+            },
+            {
+                title: '下注记录',
+                icon: 'mdi-history',
+                routeName: 'bet-history',
+                isSelected: false,
+                permission: 'bet-history',
+            }
+        ]
     },
-    {
-        title: '下注记录',
-        icon: 'mdi-history',
-        routeName: 'bet-history',
-        isSelected: false,
-        permissions: [],
-    }
 ]);
 
 function setDrawerActive(parentIndex, childIndex) {

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-btn color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
+        <v-btn v-if="checkPermission('banner-create')" color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
         
         <v-row class="mt-2">
             <v-col v-for="(b, index) in banners" :key="index" cols="12" sm="6" md="4" lg="3">
@@ -12,7 +12,7 @@
                     ></v-img>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="red" variant="flat" @click="openDeleteDialog(b.id)"><v-icon>mdi-trash-can</v-icon>删除</v-btn>
+                        <v-btn v-if="checkPermission('banner-delete')" color="red" variant="flat" @click="openDeleteDialog(b.id)"><v-icon>mdi-trash-can</v-icon>删除</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-col>
@@ -73,6 +73,7 @@ import { computed, onMounted, ref } from 'vue';
 import { BANNERS, CREATE_BANNER, DELETE_BANNER } from '../js/api';
 import { useToast } from 'vue-toastification';
 import { useUserStore } from '../stores/user';
+import { checkPermission } from '../js/common';
 
 const store = useUserStore();
 const filePath = computed(() => store.getFilePath);
