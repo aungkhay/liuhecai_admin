@@ -311,6 +311,7 @@ const headers = ref([
     { title: '计算状态', value: 'calculate_status', minWidth: 120 },
     { title: '创建时间', value: 'createdAt', minWidth: 170 },
     { title: '操作员', value: 'operator', minWidth: 120 },
+    { title: '备注', value: 'remark', minWidth: 200 },
     { title: '操作', value: 'actions', minWidth: 200 },
 ]);
 

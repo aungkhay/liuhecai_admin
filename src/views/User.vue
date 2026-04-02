@@ -17,7 +17,7 @@
                 <v-skeleton-loader type="table-row@3"/>
             </template>
             <template #item.roles="{ item }">
-                {{ item.roles && item.roles.length ? item.roles.map(role => role.name).join(', ') : '-' }}
+                {{ item.roles && item.roles.length ? item.roles.map(role => role.name).join(', ') : item.id == 1 ? '总管理员' : '-' }}
             </template>
             <template #item.createdAt="{ item }">
                 {{ $filters.formatFullDate(item.createdAt) }}
@@ -60,6 +60,7 @@
                     />
                     <v-text-field
                         v-model="userObj.password"
+                        :type="showPassword ? 'text' : 'password'"
                         label="密码"
                         variant="outlined"
                         :error-messages="v$.password.$errors.map(e => e.$message)"
@@ -67,6 +68,8 @@
                         @blur="v$.password.$touch"
                         class="mt-3"
                         @keyup="isPasswordError = false"
+                        :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                        @click:append-inner="showPassword = !showPassword"
                     />
                     <v-select
                         v-model="userObj.role_ids"
@@ -209,6 +212,7 @@ const selectedUser = ref(null);
 const dialog = ref(false);
 const deleteDialog = ref(false);
 const changePasswordDialog = ref(false);
+const showPassword = ref(false);
 const changeRoleDialog = ref(false);
 const isSaving = ref(false);
 const userObj = ref({
