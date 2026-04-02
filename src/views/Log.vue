@@ -144,7 +144,7 @@
                     </v-btn>
                 </v-card-title>
                 <v-card-text class="px-2">
-                    <v-table density="compact">
+                    <v-table density="compact" height="400" fixed-header>
                         <thead>
                             <tr>
                                 <th>Key</th>
@@ -154,7 +154,12 @@
                         <tbody v-if="selectedLog?.content" class="font-mono text-sm">
                             <tr v-for="(value, key) in selectedLog.content" :key="key">
                                 <td>{{ key }}</td>
-                                <td>{{ value }}</td>
+                                <td>
+                                    <div v-if="key == 'bets'">
+                                        <div v-for="item in value.map(bet => `[金额：${bet.bet_amount}][赔率：${bet.odds}] ${bet.item_code}`)">{{ item }}</div>
+                                    </div>
+                                    <div v-else>{{ value }}</div>
+                                </td>
                             </tr>
                         </tbody>
                     </v-table>
@@ -200,6 +205,7 @@ const models = ref([
     { id: 'ReferenceLink', name: '参考链接' },
     { id: 'ResultGuess', name: '发什么开什么' },
     { id: 'TouZiPingTe', name: '投注平特' },
+    { id: 'Bet', name: '下注' },
 ]);
 const types = ref([
     { id: 'create', name: '创建' },
