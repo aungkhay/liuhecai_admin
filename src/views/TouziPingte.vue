@@ -61,8 +61,30 @@
                     </v-btn>
                 </v-card-title>
                 <v-card-text>
-                    <div v-if="selectedId == 0" class="text-h6 border rounded-lg pa-3 mb-5">
-                        <span>{{ String(obj.batch_start).padStart(3, '0') }}</span> - <span>{{ String(obj.batch_end).padStart(3, '0') }}</span>期
+                    <div v-if="selectedId == 0">
+                        <!-- <span>{{ String(obj.batch_start).padStart(3, '0') }}</span> - <span>{{ String(obj.batch_end).padStart(3, '0') }}</span>期 -->
+                        <div class="d-flex">
+                            <div class="w-50 pr-1">
+                                <v-text-field 
+                                    v-model="obj.batch_start"
+                                    label="开始期号"
+                                    variant="outlined"
+                                    :error-messages="v$.batch_start.$errors.map(e => e.$message)"
+                                    @input="v$.batch_start.$touch"
+                                    @blur="v$.batch_start.$touch"
+                                />
+                            </div>
+                            <div class="w-50 pl-2">
+                                <v-text-field
+                                    v-model="obj.batch_end"
+                                    label="结束期号"
+                                    variant="outlined"
+                                    :error-messages="v$.batch_end.$errors.map(e => e.$message)"
+                                    @input="v$.batch_end.$touch"
+                                    @blur="v$.batch_end.$touch"
+                                />
+                            </div>
+                        </div>
                     </div>
                     <v-select 
                         :items="zodiacs" 
@@ -132,8 +154,8 @@ const obj = ref({
 })
 
 const rules = ref({
-    // batch_start: { required: helpers.withMessage('期号不能为空', required) },
-    // batch_end: { required: helpers.withMessage('期号不能为空', required) },
+    batch_start: { required: helpers.withMessage('开始期号不能为空', required) },
+    batch_end: { required: helpers.withMessage('结束期号不能为空', required) },
     zodiac_name: { required: helpers.withMessage('属性不能为空', required) },
 });
 const v$ = useVuelidate(rules.value, obj.value);
@@ -214,6 +236,7 @@ const confirmDelete = async () => {
         deleteDialog.value = false;
         selectedId.value = 0;
         await getRecords();
+        await fetchLastBatchNumber();
         toast.success(res.message);
     } else {
         toast.error(res.message);

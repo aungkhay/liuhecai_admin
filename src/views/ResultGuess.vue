@@ -66,7 +66,6 @@
                     <v-text-field
                         v-model="obj.batch_number"
                         label="期号"
-                        readonly
                         variant="outlined"
                     ></v-text-field>
                     <v-autocomplete

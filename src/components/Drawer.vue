@@ -200,6 +200,13 @@ const drawerItems = ref([
                 isSelected: false,
                 permission: 'reference-link-list',
             },
+            {
+                title: '参考图片',
+                icon: 'mdi-image-multiple',
+                routeName: 'reference-image',
+                isSelected: false,
+                permission: 'reference-image-list',
+            },
         ],
     },
     {

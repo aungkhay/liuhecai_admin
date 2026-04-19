@@ -117,6 +117,14 @@ const routes = [
                 }
             },
             {
+                path: prefix + '/reference-image',
+                name: 'reference-image',
+                component: () => import('../views/ReferenceImage.vue'),
+                meta: {
+                    title: '参考图片',
+                }
+            },
+            {
                 path: prefix + '/do-bet',
                 name: 'do-bet',
                 component: () => import('../views/DoBet.vue'),

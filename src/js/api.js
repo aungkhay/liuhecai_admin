@@ -289,3 +289,39 @@ export const LOG_LIST = async (filters = {}) => {
         params: filters
     });
 }
+
+export const REFERENCE_IMAGE_LIST = async (page, perPage) => {
+    return await API.get(`${prefix}/reference-images`, {
+        params: {
+            page: page,
+            perPage: perPage,
+        }
+    });
+}
+
+export const REFERENCE_IMAGE_UPLOAD = async function (formData) {
+    const config = {
+        method: 'post',
+        url: `${prefix}/reference-images/upload`,
+        data: formData
+    }
+    return API(config);
+}
+
+export const CREATE_REFERENCE_IMAGE = async (name, imageUrl) => {
+    return await API.post(`${prefix}/reference-images/create`, {
+        name: name,
+        image_url: imageUrl,
+    });
+}
+
+export const UPDATE_REFERENCE_IMAGE = async (id, name, imageUrl) => {
+    return await API.post(`${prefix}/reference-images/${id}/update`, {
+        name: name,
+        image_url: imageUrl,
+    });
+}
+
+export const DELETE_REFERENCE_IMAGE = async (id) => {
+    return await API.post(`${prefix}/reference-images/${id}/delete`);
+}

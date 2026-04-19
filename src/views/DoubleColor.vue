@@ -67,7 +67,6 @@
                         label="期号"
                         v-model="obj.batch_number"
                         variant="outlined"
-                        readonly
                     ></v-text-field>
 
                     <v-row no-gutters>
@@ -246,6 +245,7 @@ const deleteRecord = async () => {
     } else {
         toast.error(res.message);
     }
+    selectedId.value = 0;
     isDeleting.value = false;
 };
 
