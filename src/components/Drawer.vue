@@ -163,7 +163,7 @@ const drawerItems = ref([
         title: '结果猜测', 
         icon: 'mdi-view-list', 
         isSelected: false,
-        permissions: ['result-guess-list', 'config-list', 'touzi-pingte-list', 'double-color-list', 'reference-link-list'],
+        permissions: ['result-guess-list', 'config-list', 'touzi-pingte-list', 'double-color-list', 'reference-link-list', 'reference-image-list', 'zodiac-feed-list'],
         children: [
             {
                 title: '发什么开什么',
@@ -207,6 +207,13 @@ const drawerItems = ref([
                 isSelected: false,
                 permission: 'reference-image-list',
             },
+            {
+                title: '草菜肉肖',
+                icon: 'mdi-circle-small',
+                routeName: 'zodiac-feed',
+                isSelected: false,
+                permission: 'zodiac-feed-list',
+            }
         ],
     },
     {

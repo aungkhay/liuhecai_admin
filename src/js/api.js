@@ -325,3 +325,24 @@ export const UPDATE_REFERENCE_IMAGE = async (id, name, imageUrl) => {
 export const DELETE_REFERENCE_IMAGE = async (id) => {
     return await API.post(`${prefix}/reference-images/${id}/delete`);
 }
+
+export const GET_ZODIAC_FEEDS = async (page, perPage) => {
+    return await API.get(`${prefix}/zodiac-feeds`, {
+        params: {
+            page: page,
+            perPage: perPage,
+        }
+    });
+}
+
+export const CREATE_ZODIAC_FEED = async (data) => {
+    return await API.post(`${prefix}/zodiac-feeds/create`, data);
+}
+
+export const UPDATE_ZODIAC_FEED = async (id, data) => {
+    return await API.post(`${prefix}/zodiac-feeds/${id}/update`, data);
+}
+
+export const DELETE_ZODIAC_FEED = async (id) => {
+    return await API.post(`${prefix}/zodiac-feeds/${id}/delete`);
+}

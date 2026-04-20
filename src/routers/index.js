@@ -125,6 +125,14 @@ const routes = [
                 }
             },
             {
+                path: prefix + '/zodiac-feed',
+                name: 'zodiac-feed',
+                component: () => import('../views/ZodiacFeed.vue'),
+                meta: {
+                    title: '草菜肉肖',
+                }
+            },
+            {
                 path: prefix + '/do-bet',
                 name: 'do-bet',
                 component: () => import('../views/DoBet.vue'),
