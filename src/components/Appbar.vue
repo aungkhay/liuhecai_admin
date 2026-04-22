@@ -5,6 +5,17 @@
             <v-app-bar-title class="font-weight-bold">{{ barTitle }}</v-app-bar-title>
             <v-btn icon="mdi-account" variant="flat" color="primary" class="ml-4" size="small" @click="dialog = true"></v-btn>
 
+            <template #extension>
+                <div class="bg-grey-lighten-4 w-100">
+                    <v-tabs v-model="active" show-arrows density="compact" color="primary" bg-color="grey-lighten-4" variant="text">
+                        <v-tab density="compact" v-for="t in tabs" :key="t.key" :value="t.key" @click="goTab(t)">
+                            <span class="mr-2 text-caption">{{ t.title }}</span>
+                            <v-btn v-if="tabs.length > 1" icon="mdi-close" variant="text" size="x-small" @click.stop="closeTab(t)"/>
+                        </v-tab>
+                    </v-tabs>
+                </div>
+            </template>
+
             <v-dialog
                 v-model="dialog"
                 transition="dialog-bottom-transition" 
@@ -26,18 +37,33 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useUserStore } from '../stores/user';
+import { useTabsStore } from '../stores/tabs';
+import { useRouter } from 'vuetify/lib/composables/router.mjs';
 
 const userStore = useUserStore();
+const tabsStore = useTabsStore();
 const profile = computed(() => userStore.profile);
 const dialog = ref(false);
+const router = useRouter();
 
 const barTitle = computed(() => userStore.barTitle);
+const tabs = computed(() => tabsStore.tabs);
+const active = computed({
+    get: () => tabsStore.activeKey,
+    set: (key) => tabsStore.setActive(key),
+});
 
 function switchDrawer() {
     userStore.setDrawer();
 }
 
-onMounted(() => {
+function goTab(t) {
+  tabsStore.setActive(t.key);
+  router.push({ name: t.key });
+}
 
-})
+function closeTab(tab) {
+    const nextPath = tabsStore.close(tab.key);
+    if (nextPath) router.push(nextPath);
+}
 </script>

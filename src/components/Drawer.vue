@@ -81,8 +81,10 @@ import router from '@/routers';
 import { LOGOUT } from '@/js/api';
 import { useUserStore } from '../stores/user';
 import { checkPermission } from '@/js/common';
+import { useTabsStore } from '../stores/tabs';
 
 const userStore = useUserStore();
+const tabsStore = useTabsStore();
 const { xs } = useDisplay();
 const isDrawerOpen = computed(() => userStore.isDrawerOpen);
 const innerWidth = computed(() => userStore.innerWidth);
@@ -269,6 +271,13 @@ function setDrawerActive(parentIndex, childIndex) {
     }
 
     open.value = [drawerItems.value[parentIndex].title];
+
+    tabsStore.setActive(drawerItems.value[parentIndex].routeName);
+    tabsStore.open({
+        title: childIndex >= 0 ? drawerItems.value[parentIndex].children[childIndex].title : drawerItems.value[parentIndex].title,
+        key: childIndex >= 0 ? drawerItems.value[parentIndex].children[childIndex].routeName : drawerItems.value[parentIndex].routeName,
+        fullPath: childIndex >= 0 ? drawerItems.value[parentIndex].children[childIndex].routeName : drawerItems.value[parentIndex].routeName,
+    });
 }
 
 function changeRoute(parentIndex, childIndex) {
