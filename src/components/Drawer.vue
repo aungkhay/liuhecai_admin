@@ -210,6 +210,13 @@ const drawerItems = ref([
                 permission: 'must-win-3-batch-list',
             },
             {
+                title: '十码必中特',
+                icon: 'mdi-circle-small',
+                routeName: 'ten-win-special',
+                isSelected: false,
+                permission: 'ten-win-special-list',
+            },
+            {
                 title: '参考链接',
                 icon: 'mdi-circle-small',
                 routeName: 'reference-link',

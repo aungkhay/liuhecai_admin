@@ -141,6 +141,14 @@ const routes = [
                 }
             },
             {
+                path: prefix + '/ten-win-special',
+                name: 'ten-win-special',
+                component: () => import('../views/TenWinSpecial.vue'),
+                meta: {
+                    title: '十码必中特',
+                }
+            },
+            {
                 path: prefix + '/do-bet',
                 name: 'do-bet',
                 component: () => import('../views/DoBet.vue'),

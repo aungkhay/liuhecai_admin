@@ -371,3 +371,24 @@ export const UPDATE_MUST_WIN_3_BATCH = async (id, data) => {
 export const DELETE_MUST_WIN_3_BATCH = async (id) => {
     return await API.post(`${prefix}/must-win-3-batch/${id}/delete`);
 }
+
+export const GET_TEN_WIN_SPECIALS = async (page, perPage) => {
+    return await API.get(`${prefix}/ten-win-special/list`, {
+        params: {
+            page: page,
+            perPage: perPage,
+        }
+    });
+}
+
+export const CREATE_TEN_WIN_SPECIAL = async (data) => {
+    return await API.post(`${prefix}/ten-win-special/create`, data);
+}
+
+export const UPDATE_TEN_WIN_SPECIAL = async (id, data) => {
+    return await API.post(`${prefix}/ten-win-special/${id}/update`, data);
+}
+
+export const DELETE_TEN_WIN_SPECIAL = async (id) => {
+    return await API.post(`${prefix}/ten-win-special/${id}/delete`);
+}
