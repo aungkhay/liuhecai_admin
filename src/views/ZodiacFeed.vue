@@ -135,12 +135,12 @@ const perPage = ref(10);
 const total = ref(0);
 const loading = ref(false);
 const headers = [
-    { title: '列', value: 'index', width: 60 },
-    { title: '期数', value: 'batch_number', minWidth: 150 },
+    { title: '序列', value: 'index', fixed: 'start', width: 60 },
+    { title: '期号', value: 'batch_number', fixed: 'start', width: 120 },
     { title: '生肖', value: 'zodiac', minWidth: 150 },
     { title: '饲料', value: 'feed', minWidth: 150 },
     { title: '创建时间', value: 'createdAt', minWidth: 170 },
-    { title: '操作', value: 'actions', width: 200 },
+    { title: '操作', value: 'actions', minWidth: 150 },
 ];
 
 const obj = ref({
@@ -185,7 +185,7 @@ const getRecords = async () => {
     loading.value = true;
     const res = await GET_ZODIAC_FEEDS(page.value, perPage.value);
     if (res.code == 1000) {
-         records.value = res.data.records.map((record, index) => ({
+        records.value = res.data.records.map((record, index) => ({
             ...record,
             index: (page.value - 1) * perPage.value + index + 1
         }));

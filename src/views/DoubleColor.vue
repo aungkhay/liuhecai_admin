@@ -1,54 +1,41 @@
 <template>
     <div>
-        <v-btn v-if="checkPermission('double-color-create')" color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
+        <v-btn v-if="checkPermission('double-color-create')" color="primary" @click="dialog = true" class="mb-2"><v-icon>mdi-plus</v-icon> 添加</v-btn>
 
-        <v-table>
-            <thead>
-                <tr>
-                    <th>序列</th>
-                    <th>期号</th>
-                    <th>颜色</th>
-                    <th>结果</th>
-                    <th>是否准</th>
-                    <th>创建时间</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(record, index) in records" :key="index">
-                    <td>{{ index + 1 + (page - 1) * perPage }}</td>
-                    <td>{{ String(record.batch_number).padStart(3, '0') }}</td>
-                    <td>{{ colorMap[record.color_one] }} , {{ colorMap[record.color_two] }}</td>
-                    <td>{{ record.result_number == 0 ? '-' : String(record.result_number).padStart(2, '0') }} <span v-if="record.zodiac_name">{{ record.zodiac_name }}</span></td>
-                    <td>
-                        <v-chip v-if="record.match_color == record.color_one || record.match_color == record.color_two" color="success">准</v-chip>
-                        <v-chip v-else-if="record.match_color == null" color="warning">未开奖</v-chip>
-                        <v-chip v-else color="error">不准</v-chip>
-                    </td>
-                    <td>{{ $filters.formatFullDate(record.createdAt) }}</td>
-                    <td>
-                        <v-btn v-if="checkPermission('double-color-update')" variant="tonal" color="success" size="small" class="mr-2" @click="editRecord(record)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
-                        <v-btn v-if="checkPermission('double-color-delete')" variant="tonal" color="error" size="small" @click="confirmDelete(record.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
-                    </td>
-                </tr>
-            </tbody>
-        </v-table>
-
-        <div class="d-flex justify-center mt-5">
-            <v-pagination
-                v-model="page"
-                :length="totalPage"
-                :total-visible="7"
-                color="grey"
-                rounded="circle"
-                density="compact"
-                active-color="primary"
-                :show-first-last-page="true"
-                @first="goToFirst"
-                @last="goToLast"
-                @update:model-value="switchPage"
-            ></v-pagination>
-        </div>
+        <v-data-table-server
+            v-model:page="page"
+            v-model:items-per-page="perPage"
+            :headers="headers"
+            :items="records"
+            :items-length="total"
+            :loading="loading"
+            class="table1"
+            :items-per-page-options="[5, 10, 15, 20, 50]"
+            @update:options="fetchRecords"
+            hover
+        >
+            <template #loading>
+                <v-skeleton-loader type="table-row@3"/>
+            </template>
+            <template #item.color="{ item }">
+                {{ colorMap[item.color_one] }} , {{ colorMap[item.color_two] }}
+            </template>
+            <template #item.result="{ item }">
+                {{ item.result_number == 0 ? '-' : String(item.result_number).padStart(2, '0') }} <span v-if="item.zodiac_name">{{ item.zodiac_name }}</span>
+            </template>
+            <template #item.match_color="{ item }">
+                <v-chip v-if="item.match_color == item.color_one || item.match_color == item.color_two" color="success">准</v-chip>
+                <v-chip v-else-if="item.match_color == null" color="warning">未开奖</v-chip>
+                <v-chip v-else color="error">不准</v-chip>
+            </template>
+            <template #item.createdAt="{ item }">
+                {{ $filters.formatFullDate(item.createdAt) }}
+            </template>
+            <template #item.actions="{ item }">
+                <v-btn v-if="checkPermission('double-color-update')" size="small" variant="tonal" color="success" class="mr-2" @click="editRecord(item)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
+                <v-btn v-if="checkPermission('double-color-delete')" size="small" variant="tonal" color="error" @click="confirmDelete(item)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+            </template>
+        </v-data-table-server>
 
         <v-dialog
             v-model="dialog"
@@ -153,6 +140,16 @@ const colorMap = {
     green: '绿波',
     blue: '蓝波'
 };
+const headers = ref([
+    { title: '序列', value: 'index', fixed: 'start', width: 60 },
+    { title: '期号', value: 'batch_number', fixed: 'start', width: 120 },
+    { title: '颜色', value: 'color', minWidth: 100 },
+    { title: '结果', value: 'result', minWidth: 100 },
+    { title: '是否准', value: 'match_color', minWidth: 100 },
+    { title: '创建时间', value: 'createdAt', minWidth: 170 },
+    { title: '操作', value: 'actions', minWidth: 150 },
+]);
+const loading = ref(false);
 
 const obj = ref({
     batch_number: lastBatchNumber.value,
@@ -170,9 +167,11 @@ const v$ = useVuelidate(rules.value, obj.value);
 const fetchRecords = async () => {
     const res = await GET_DOUBLE_COLOR(page.value, perPage.value);
     if (res.code === 1000) {
-        records.value = res.data.records;
+        records.value = res.data.records.map((record, index) => ({
+            ...record,
+            index: (page.value - 1) * perPage.value + index + 1
+        }));
         total.value = res.data.meta.total;
-        totalPage.value = res.data.meta.totalPage;
     }
 };
 
@@ -263,6 +262,5 @@ const switchPage = () => {
 
 onMounted(() => {
     fetchLastBatchNumber();
-    fetchRecords();
 });
 </script>

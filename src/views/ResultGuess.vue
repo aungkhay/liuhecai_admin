@@ -1,54 +1,37 @@
 <template>
     <div>
-        <v-btn v-if="checkPermission('result-guess-create')" color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
+        <v-btn v-if="checkPermission('result-guess-create')" color="primary" @click="dialog = true" class="mb-2"><v-icon>mdi-plus</v-icon> 添加</v-btn>
 
-        <v-table>
-            <thead>
-                <tr>
-                    <th style="min-width: 100px;">序列</th>
-                    <th style="min-width: 100px;">期号</th>
-                    <th style="min-width: 100px;">属性</th>
-                    <th style="min-width: 100px;">结果</th>
-                    <th style="min-width: 100px;">是否准</th>
-                    <th style="min-width: 170px;">创建时间</th>
-                    <th style="min-width: 180px;">操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(result, index) in results" :key="index">
-                    <td>{{ index + 1 }}</td>
-                    <td>{{ result.batch_number.padStart(3, '0') }}</td>
-                    <td>{{ result.zodiac_attr }}</td>
-                    <td>{{ result.result_number == 0 ? '-' : String(result.result_number).padStart(2, '0') }} <span v-if="result.zodiac_name">{{ result.zodiac_name }}</span></td>
-                    <td>
-                        <v-chip v-if="result.result_match == 1" color="success">准</v-chip>
-                        <v-chip v-else-if="result.result_match == 2" color="error">不准</v-chip>
-                        <v-chip v-else color="warning">未开奖</v-chip>
-                    </td>
-                    <td>{{ $filters.formatFullDate(result.createdAt) }}</td>
-                    <td>
-                        <!-- <v-btn color="success" size="small" class="mr-2" @click="editResult(result)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn> -->
-                        <v-btn v-if="checkPermission('result-guess-delete')" color="error" variant="tonal" size="small" @click="confirmDelete(result.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
-                    </td>
-                </tr>
-            </tbody>
-        </v-table>
-
-        <div class="d-flex justify-center mt-5">
-            <v-pagination
-                v-model="page"
-                :length="totalPage"
-                :total-visible="7"
-                color="grey"
-                rounded="circle"
-                density="compact"
-                active-color="primary"
-                :show-first-last-page="true"
-                @first="goToFirst"
-                @last="goToLast"
-                @update:model-value="switchPage"
-            ></v-pagination>
-        </div>
+        <v-data-table-server
+            v-model:page="page"
+            v-model:items-per-page="perPage"
+            :headers="headers"
+            :items="results"
+            :items-length="total"
+            :loading="loading"
+            class="table1"
+            :items-per-page-options="[5, 10, 15, 20, 50]"
+            @update:options="fetchResults"
+            hover
+        >
+            <template #loading>
+                <v-skeleton-loader type="table-row@3"/>
+            </template>
+            <template #item.result="{ item }">
+                {{ item.result_number == 0 ? '-' : String(item.result_number).padStart(2, '0') }} <span v-if="item.zodiac_name">{{ item.zodiac_name }}</span>
+            </template>
+            <template #item.result_match="{ item }">
+                <v-chip v-if="item.result_match == 1" color="success">准</v-chip>
+                <v-chip v-else-if="item.result_match == 2" color="error">不准</v-chip>
+                <v-chip v-else color="warning">未开奖</v-chip>
+            </template>
+            <template #item.createdAt="{ item }">
+                {{ $filters.formatFullDate(item.createdAt) }}
+            </template>
+            <template #item.actions="{ item }">
+                <v-btn v-if="checkPermission('touzi-pingte-delete') && !item.is_finished" size="small" variant="tonal" color="error" @click="deleteRecord(item.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+            </template>
+        </v-data-table-server>
 
         <v-dialog 
             v-model="dialog"
@@ -129,6 +112,16 @@ const isSaving = ref(false);
 const isDeleting = ref(false);
 const selectedId = ref(0);
 const lastBatchNumber = ref(0);
+const headers = ref([
+    { title: '序列', value: 'index', fixed: 'start', width: 60 },
+    { title: '期号', value: 'batch_number', fixed: 'start', width: 120 },
+    { title: '属性', value: 'zodiac_attr', minWidth: 100 },
+    { title: '结果', value: 'result', minWidth: 100 },
+    { title: '是否准', value: 'result_match', minWidth: 100 },
+    { title: '创建时间', value: 'createdAt', minWidth: 170 },
+    { title: '操作', value: 'actions', minWidth: 150 },
+]);
+const loading = ref(false);
 
 const obj = ref({
     batch_number: lastBatchNumber.value,
@@ -150,9 +143,11 @@ function resetForm() {
 const fetchResults = async () => {
     const res = await RESULT_GUESSES(page.value, perPage.value);
     if (res.code === 1000) {
-        results.value = res.data.results;
+        results.value = res.data.results.map((record, index) => ({
+            ...record,
+            index: (page.value - 1) * perPage.value + index + 1
+        }));
         total.value = res.data.meta.total;
-        totalPage.value = res.data.meta.totalPage;
     }
 }
 
@@ -229,6 +224,5 @@ const fetchLastBatchNumber = async () => {
 
 onMounted(() => {
     fetchLastBatchNumber();
-    fetchResults();
 });
 </script>

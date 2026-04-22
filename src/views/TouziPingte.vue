@@ -1,52 +1,36 @@
 <template>
     <div>
-        <v-btn v-if="checkPermission('touzi-pingte-create')" color="primary" @click="dialog = true"><v-icon>mdi-plus</v-icon> 添加</v-btn>
+        <v-btn v-if="checkPermission('touzi-pingte-create')" color="primary" @click="dialog = true" class="mb-2"><v-icon>mdi-plus</v-icon> 添加</v-btn>
 
-        <v-table>
-            <thead>
-                <tr>
-                    <th>序列</th>
-                    <th>期号</th>
-                    <th>生肖</th>
-                    <th>开球数</th>
-                    <th>状态</th>
-                    <th>创建时间</th>
-                    <th>操作</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(record, index) in records" :key="index">
-                    <td>{{ record.id }}</td>
-                    <td>{{ String(record.batch_start).padStart(3, '0') }} - {{ String(record.batch_end).padStart(3, '0') }}</td>
-                    <td>{{ record.zodiac_name }}</td>
-                    <td>{{ record.open_count }}</td>
-                    <td>
-                        <v-chip v-if="record.is_finished == 0" color="warning">未完成</v-chip>
-                        <v-chip v-else color="success">已完成</v-chip>
-                    </td>
-                    <td>{{ $filters.formatFullDate(record.createdAt) }}</td>
-                    <td>
-                        <v-btn v-if="checkPermission('touzi-pingte-delete') && !record.is_finished" size="small" variant="tonal" color="error" @click="deleteRecord(record.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
-                    </td>
-                </tr>
-            </tbody>
-        </v-table>
-
-        <div class="d-flex justify-center mt-5">
-            <v-pagination
-                v-model="page"
-                :length="totalPage"
-                :total-visible="7"
-                color="grey"
-                rounded="circle"
-                density="compact"
-                active-color="primary"
-                :show-first-last-page="true"
-                @first="goToFirst"
-                @last="goToLast"
-                @update:model-value="switchPage"
-            ></v-pagination>
-        </div>
+        <v-data-table-server
+            v-model:page="page"
+            v-model:items-per-page="perPage"
+            :headers="headers"
+            :items="records"
+            :items-length="total"
+            :loading="loading"
+            class="table1"
+            :items-per-page-options="[5, 10, 15, 20, 50]"
+            @update:options="getRecords"
+            hover
+        >
+            <template #loading>
+                <v-skeleton-loader type="table-row@3"/>
+            </template>
+            <template #item.batch_number="{ item }">
+                {{ String(item.batch_start).padStart(3, '0') + ' - ' + String(item.batch_end).padStart(3, '0') }}
+            </template>
+            <template #item.is_finished="{ item }">
+                <v-chip v-if="item.is_finished == 0" color="warning">未完成</v-chip>
+                <v-chip v-else color="success">已完成</v-chip>
+            </template>
+            <template #item.createdAt="{ item }">
+                {{ $filters.formatFullDate(item.createdAt) }}
+            </template>
+            <template #item.actions="{ item }">
+                <v-btn v-if="checkPermission('touzi-pingte-delete') && !item.is_finished" size="small" variant="tonal" color="error" @click="deleteRecord(item.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+            </template>
+        </v-data-table-server>
 
         <v-dialog 
             v-model="dialog"
@@ -145,6 +129,15 @@ const isDeleting = ref(false);
 const isSaving = ref(false);
 const selectedId = ref(0);
 const lastBatchNumber = ref(0);
+const headers = ref([
+    { title: '序列', value: 'index', fixed: 'start', width: 60 },
+    { title: '期号', value: 'batch_number', fixed: 'start', width: 150 },
+    { title: '生肖', value: 'zodiac_name', minWidth: 80 },
+    { title: '开球数', value: 'open_count', minWidth: 100 },
+    { title: '状态', value: 'is_finished', minWidth: 100 },
+    { title: '创建时间', value: 'createdAt', minWidth: 170 },
+    { title: '操作', value: 'actions', minWidth: 150 },
+]);
 
 const obj = ref({
     year: zodiacStore.currentYear,
@@ -164,9 +157,11 @@ const getRecords = async () => {
     isLoading.value = true;
     const res = await GET_TOUZI_PINGTE(page.value, perPage.value);
     if (res.code == 1000) {
-        records.value = res.data.records;
+        records.value = res.data.records.map((record, index) => ({
+            ...record,
+            index: (page.value - 1) * perPage.value + index + 1
+        }));
         total.value = res.data.meta.total;
-        totalPage.value = res.data.meta.totalPage;
     }
     isLoading.value = false;
 }
@@ -246,6 +241,5 @@ const confirmDelete = async () => {
 
 onMounted(() => {
     fetchLastBatchNumber();
-    getRecords();
 });
 </script>

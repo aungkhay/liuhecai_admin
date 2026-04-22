@@ -196,6 +196,13 @@ const drawerItems = ref([
                 permission: 'double-color-list',
             },
             {
+                title: '草菜肉肖',
+                icon: 'mdi-circle-small',
+                routeName: 'zodiac-feed',
+                isSelected: false,
+                permission: 'zodiac-feed-list',
+            },
+            {
                 title: '参考链接',
                 icon: 'mdi-circle-small',
                 routeName: 'reference-link',
@@ -208,13 +215,6 @@ const drawerItems = ref([
                 routeName: 'reference-image',
                 isSelected: false,
                 permission: 'reference-image-list',
-            },
-            {
-                title: '草菜肉肖',
-                icon: 'mdi-circle-small',
-                routeName: 'zodiac-feed',
-                isSelected: false,
-                permission: 'zodiac-feed-list',
             }
         ],
     },
