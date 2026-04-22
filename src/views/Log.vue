@@ -252,7 +252,7 @@ const clearFilters = () => {
 const fetchLogs = async () => {
     loading.value = true;
     try {
-        const res = await LOG_LIST({ page: page.value, per_page: perPage.value, ...filterObj.value });
+        const res = await LOG_LIST({ page: page.value, perPage: perPage.value, ...filterObj.value });
         logs.value = res.data.logs.map((log, index) => ({
             ...log,
             index: (page.value - 1) * perPage.value + index + 1
