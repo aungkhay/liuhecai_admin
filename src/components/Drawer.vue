@@ -203,6 +203,13 @@ const drawerItems = ref([
                 permission: 'zodiac-feed-list',
             },
             {
+                title: '三期必中',
+                icon: 'mdi-circle-small',
+                routeName: 'must-win-3-batch',
+                isSelected: false,
+                permission: 'must-win-3-batch-list',
+            },
+            {
                 title: '参考链接',
                 icon: 'mdi-circle-small',
                 routeName: 'reference-link',

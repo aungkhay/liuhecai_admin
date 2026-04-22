@@ -133,6 +133,14 @@ const routes = [
                 }
             },
             {
+                path: prefix + '/must-win-3-batch',
+                name: 'must-win-3-batch',
+                component: () => import('../views/MustWin3Batch.vue'),
+                meta: {
+                    title: '三期必中',
+                }
+            },
+            {
                 path: prefix + '/do-bet',
                 name: 'do-bet',
                 component: () => import('../views/DoBet.vue'),

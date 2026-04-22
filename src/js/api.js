@@ -346,3 +346,28 @@ export const UPDATE_ZODIAC_FEED = async (id, data) => {
 export const DELETE_ZODIAC_FEED = async (id) => {
     return await API.post(`${prefix}/zodiac-feeds/${id}/delete`);
 }
+
+export const MUST_WIN_3_BATCH_LAST_BATCH_NUMBER = async () => {
+    return await API.get(`${prefix}/must-win-3-batch/last-batch-number`);
+}
+
+export const GET_MUST_WIN_3_BATCHES = async (page, perPage) => {
+    return await API.get(`${prefix}/must-win-3-batch/list`, {
+        params: {
+            page: page,
+            perPage: perPage,
+        }
+    });
+}
+
+export const CREATE_MUST_WIN_3_BATCH = async (data) => {
+    return await API.post(`${prefix}/must-win-3-batch/create`, data);
+}
+
+export const UPDATE_MUST_WIN_3_BATCH = async (id, data) => {
+    return await API.post(`${prefix}/must-win-3-batch/${id}/update`, data);
+}
+
+export const DELETE_MUST_WIN_3_BATCH = async (id) => {
+    return await API.post(`${prefix}/must-win-3-batch/${id}/delete`);
+}
