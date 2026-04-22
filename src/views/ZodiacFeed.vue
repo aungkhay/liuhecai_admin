@@ -32,8 +32,8 @@
                 {{ $filters.formatFullDate(item.createdAt) }}
             </template>
             <template #item.actions="{ item }">
-                <v-btn v-if="checkPermission('zodiac-feed-update')" size="small" variant="tonal" color="success" class="mr-2" :disabled="item.result_number" @click="editRecord(item)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
-                <v-btn v-if="checkPermission('zodiac-feed-delete')" size="small" variant="tonal" color="error" :disabled="item.result_number" @click="confirmDelete(item)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                <v-btn v-if="checkPermission('zodiac-feed-update')" size="small" variant="tonal" color="success" class="mr-2" :disabled="item.result_number > 0" @click="editRecord(item)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
+                <v-btn v-if="checkPermission('zodiac-feed-delete')" size="small" variant="tonal" color="error" :disabled="item.result_number > 0" @click="confirmDelete(item)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
             </template>
         </v-data-table-server>
 

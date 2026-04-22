@@ -129,6 +129,7 @@ const isDeleting = ref(false);
 const isSaving = ref(false);
 const selectedId = ref(0);
 const lastBatchNumber = ref(0);
+const loading = ref(false);
 const headers = ref([
     { title: '序列', value: 'index', fixed: 'start', width: 60 },
     { title: '期号', value: 'batch_number', fixed: 'start', width: 150 },

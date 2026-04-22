@@ -33,8 +33,8 @@
                 {{ $filters.formatFullDate(item.createdAt) }}
             </template>
             <template #item.actions="{ item }">
-                <v-btn v-if="checkPermission('ten-win-special-update')" size="small" variant="tonal" color="success" class="mr-2" :disabled="item.result_number" @click="editRecord(item)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
-                <v-btn v-if="checkPermission('ten-win-special-delete')" size="small" variant="tonal" color="error" :disabled="item.result_number" @click="deleteRecord(item)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                <v-btn v-if="checkPermission('ten-win-special-update')" size="small" variant="tonal" color="success" class="mr-2" :disabled="item.result_number > 0" @click="editRecord(item)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
+                <v-btn v-if="checkPermission('ten-win-special-delete')" size="small" variant="tonal" color="error" :disabled="item.result_number > 0" @click="deleteRecord(item)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
             </template>
         </v-data-table-server>
 
@@ -168,7 +168,7 @@ const getRecords = async () => {
             ...record,
             index: (page.value - 1) * perPage.value + index + 1
         }));
-        total.value = res.data.total;
+        total.value = res.data.meta.total;
     }
     loading.value = false;
 }
