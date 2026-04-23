@@ -57,8 +57,8 @@
                 {{ $filters.formatFullDate(item.createdAt) }}
             </template>
             <template #item.actions="{ item }">
-                <v-btn v-if="checkPermission('must-win-3-batch-update')" size="small" variant="tonal" color="success" class="mr-2" :disabled="item.result_number" @click="editRecord(item)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
-                <v-btn v-if="checkPermission('must-win-3-batch-delete')" size="small" variant="tonal" color="error" :disabled="item.result_number" @click="deleteRecord(item)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                <v-btn v-if="checkPermission('must-win-3-batch-update')" size="small" variant="tonal" color="success" class="mr-2" :disabled="item.result_number_one" @click="editRecord(item)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
+                <v-btn v-if="checkPermission('must-win-3-batch-delete')" size="small" variant="tonal" color="error" :disabled="item.result_number_one" @click="deleteRecord(item)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
             </template>
         </v-data-table-server>
 
