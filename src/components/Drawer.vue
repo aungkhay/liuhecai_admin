@@ -236,7 +236,7 @@ const drawerItems = ref([
         title: '下注管理',
         icon: 'mdi-cash-multiple',
         isSelected: false,
-        permissions: ['bet-list', 'bet-history'],
+        permissions: ['bet-list', 'bet-history', 'batch-summary'],
         children: [
             {
                 title: '下注',
@@ -251,6 +251,13 @@ const drawerItems = ref([
                 routeName: 'bet-history',
                 isSelected: false,
                 permission: 'bet-history',
+            },
+            {
+                title: '下注总结',
+                icon: 'mdi-chart-box',
+                routeName: 'batch-summary',
+                isSelected: false,
+                permission: 'batch-summary',
             }
         ]
     },

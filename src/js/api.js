@@ -392,3 +392,12 @@ export const UPDATE_TEN_WIN_SPECIAL = async (id, data) => {
 export const DELETE_TEN_WIN_SPECIAL = async (id) => {
     return await API.post(`${prefix}/ten-win-special/${id}/delete`);
 }
+
+export const BATCH_SUMMARY = async (page, perPage) => {
+    return await API.get(`${prefix}/batch/summary`, {
+        params: {
+            page: page,
+            perPage: perPage,
+        }
+    });
+}

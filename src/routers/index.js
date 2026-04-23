@@ -165,6 +165,14 @@ const routes = [
                 }
             },
             {
+                path: prefix + '/batch-summary',
+                name: 'batch-summary',
+                component: () => import('../views/BatchSummary.vue'),
+                meta: {
+                    title: '下注总结',
+                }
+            },
+            {
                 path: prefix + '/log',
                 name: 'log',
                 component: () => import('../views/Log.vue'),
