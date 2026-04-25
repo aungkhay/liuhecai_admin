@@ -205,6 +205,9 @@ const models = ref([
     { id: 'ReferenceLink', name: '参考链接' },
     { id: 'ResultGuess', name: '发什么开什么' },
     { id: 'TouZiPingTe', name: '投注平特' },
+    { id: 'ZodiacFeed', name: '草菜肉肖' },
+    { id: 'MustWin3Batch', name: '三期必中' },
+    { id: 'TenWinSpecial', name: '十码必中特' },
     { id: 'Bet', name: '下注' },
 ]);
 const types = ref([
