@@ -162,11 +162,9 @@ const rules = ref({
 const v$ = useVuelidate(rules.value, obj.value);
 
 const resetForm = () => {
-    obj.value = {
-        batch_number: lastBatchNumber.value,
-        feed_one: null,
-        feed_two: null,
-    };
+    obj.value.batch_number = lastBatchNumber.value;
+    obj.value.feed_one = null;
+    obj.value.feed_two = null;
     v$.value.$reset();
     selectedRecord.value = null;
     dialog.value = false;

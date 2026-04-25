@@ -223,14 +223,12 @@ const v$ = useVuelidate(rules.value, obj.value);
 
 const resetForm = () => {
     selectedRecord.value = null;
-    obj.value = {
-        batch_one: lastBatchNumber.value + 1,
-        batch_two: lastBatchNumber.value + 2,
-        batch_three: lastBatchNumber.value + 3,
-        zodiac_one: null,
-        zodiac_two: null,
-        zodiac_three: null,
-    };
+    obj.value.batch_one = lastBatchNumber.value + 1;
+    obj.value.batch_two = lastBatchNumber.value + 2;
+    obj.value.batch_three = lastBatchNumber.value + 3;
+    obj.value.zodiac_one = null;
+    obj.value.zodiac_two = null;
+    obj.value.zodiac_three = null;
     v$.value.$reset();
     dialog.value = false;
 };

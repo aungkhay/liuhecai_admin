@@ -264,26 +264,24 @@ const getZodiacName = (num_desc) => {
 }
 
 const resetForm = () => {
-    obj.value = {
-        year: currentYear.value,
-        lottery_type: lotteryType.value,
-        batch_number: "",
-        num1: null,
-        num2: null,
-        num3: null,
-        num4: null,
-        num5: null,
-        num6: null,
-        num7: null,
-        draw_date: "",
-        num1_desc: "",
-        num2_desc: "",
-        num3_desc: "",
-        num4_desc: "",
-        num5_desc: "",
-        num6_desc: "",
-        num7_desc: "",
-    };
+    obj.value.year = currentYear.value;
+    obj.value.lottery_type = lotteryType.value;
+    obj.value.batch_number = "";
+    obj.value.num1 = null;
+    obj.value.num2 = null;
+    obj.value.num3 = null;
+    obj.value.num4 = null;
+    obj.value.num5 = null;
+    obj.value.num6 = null;
+    obj.value.num7 = null;
+    obj.value.draw_date = "";
+    obj.value.num1_desc = "";
+    obj.value.num2_desc = "";
+    obj.value.num3_desc = "";
+    obj.value.num4_desc = "";
+    obj.value.num5_desc = "";
+    obj.value.num6_desc = "";
+    obj.value.num7_desc = "";
     v$.value.$reset();
     selectedId.value = 0;
     selectedRecord.value = null;

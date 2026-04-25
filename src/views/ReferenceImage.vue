@@ -120,10 +120,8 @@ const obj = ref({
 })
 
 const closeDialog = () => {
-    obj.value = {
-        name: '',
-        image_url: '',
-    };
+    obj.value.name = '';
+    obj.value.image_url = '';
     dialog.value = false;
     deleteDialog.value = false;
     selectedRecord.value = null;
