@@ -215,6 +215,7 @@ const types = ref([
     { id: 'update', name: '更新' },
     { id: 'delete', name: '删除' },
     { id: 'upload', name: '上传' },
+    { id: 'login', name: '登录' },
     { id: 'assign_permission', name: '分配权限' },
     { id: 'change_password', name: '修改密码' },
     { id: 'change_status', name: '修改状态' },

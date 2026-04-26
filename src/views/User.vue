@@ -25,7 +25,7 @@
             <template #item.actions="{ item }">
                 <v-btn v-if="checkPermission('user-change-status')" size="small" variant="tonal" :color="item.status === 1 ? 'error' : 'success'" :disabled="item.id == 1" @click="changeStatus(item)">{{ item.status === 1 ? '禁用' : '启用' }}</v-btn>
                 <v-btn v-if="checkPermission('user-delete')" size="small" variant="tonal" color="error" :disabled="item.id == 1" @click="selectedUser = item; deleteDialog = true" class="mx-1"><v-icon>mdi-delete</v-icon> 删除</v-btn>
-                <v-btn v-if="checkPermission('user-change-password')" size="small" variant="tonal" color="purple" :disabled="!isSuperAdmin && item.id != 1" @click="selectedUser = item; changePasswordDialog = true" class="mr-1"><v-icon>mdi-lock</v-icon> 修改密码</v-btn>
+                <v-btn v-if="checkPermission('user-change-password')" size="small" variant="tonal" color="purple" :disabled="!isSuperAdmin && item.id == 1" @click="selectedUser = item; changePasswordDialog = true" class="mr-1"><v-icon>mdi-lock</v-icon> 修改密码</v-btn>
                 <v-btn v-if="checkPermission('user-assign-role')" size="small" variant="tonal" color="primary" :disabled="item.id == 1" @click="editRole(item)"><v-icon>mdi-lock-reset</v-icon> 切换角色</v-btn>
             </template>
         </v-data-table-server>

@@ -101,7 +101,7 @@ const drawerItems = ref([
         icon: 'mdi-view-dashboard', 
         routeName: 'dashboard', 
         isSelected: false,
-        permissions: []
+        permissions: ['bet-summary']
     },
     {
         title: '轮播图管理',
