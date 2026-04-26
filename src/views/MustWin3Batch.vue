@@ -57,8 +57,8 @@
                 {{ $filters.formatFullDate(item.createdAt) }}
             </template>
             <template #item.actions="{ item }">
-                <v-btn v-if="checkPermission('must-win-3-batch-update')" size="small" variant="tonal" color="success" class="mr-2" :disabled="item.result_number_one" @click="editRecord(item)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
-                <v-btn v-if="checkPermission('must-win-3-batch-delete')" size="small" variant="tonal" color="error" :disabled="item.result_number_one" @click="deleteRecord(item)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                <v-btn v-if="checkPermission('must-win-3-batch-update')" size="small" variant="tonal" color="success" class="mr-2" :disabled="item.result_number_one > 0" @click="editRecord(item)"><v-icon>mdi-pencil</v-icon> 编辑</v-btn>
+                <v-btn v-if="checkPermission('must-win-3-batch-delete')" size="small" variant="tonal" color="error" :disabled="item.result_number_one > 0" @click="deleteRecord(item)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
             </template>
         </v-data-table-server>
 
@@ -196,7 +196,7 @@ const headers = ref([
     { title: '结果', value: 'result_number', minWidth: 200 },
     { title: '状态', value: 'is_finished', minWidth: 100 },
     { title: '创建时间', value: 'createdAt', minWidth: 170 },
-    { title: '操作', value: 'actions', minWidth: 150, },
+    { title: '操作', value: 'actions', minWidth: 180, fixed: 'end' },
 ]);
 const deleteDialog = ref(false);
 const isDeleting = ref(false);

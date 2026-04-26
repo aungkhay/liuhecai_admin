@@ -29,7 +29,7 @@
                 {{ $filters.formatFullDate(item.createdAt) }}
             </template>
             <template #item.actions="{ item }">
-                <v-btn v-if="checkPermission('touzi-pingte-delete')" size="small" variant="tonal" color="error" :disabled="item.result_number" @click="deleteRecord(item.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
+                <v-btn v-if="checkPermission('touzi-pingte-delete')" size="small" variant="tonal" color="error" :disabled="item.result_number > 0" @click="deleteRecord(item.id)"><v-icon>mdi-delete</v-icon> 删除</v-btn>
             </template>
         </v-data-table-server>
 
