@@ -215,10 +215,10 @@ const types = ref([
     { id: 'update', name: '更新' },
     { id: 'delete', name: '删除' },
     { id: 'upload', name: '上传' },
-    { id: 'assign-permission', name: '分配权限' },
-    { id: 'change-password', name: '修改密码' },
-    { id: 'change-status', name: '修改状态' },
-    { id: 'assign-roles', name: '分配角色' },
+    { id: 'assign_permission', name: '分配权限' },
+    { id: 'change_password', name: '修改密码' },
+    { id: 'change_status', name: '修改状态' },
+    { id: 'assign_roles', name: '分配角色' },
 ]);
 const fromDateMenu = ref(false);
 const toDateMenu = ref(false);
