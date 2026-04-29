@@ -18,6 +18,9 @@
             <template #item.total_profit="{ item }">
                 {{ item.total_bet_amount - item.total_win_amount }}
             </template>
+            <template #item.total_profit_rate="{ item }">
+                {{ ((item.total_bet_amount - item.total_win_amount) / item.total_bet_amount * 100).toFixed(2) }}%
+            </template>
         </v-data-table-server>
     </div>
 </template>
@@ -38,6 +41,7 @@ const headers = ref([
     { title: '总下注', value: 'total_bet_amount', width: 120 },
     { title: '总中奖', value: 'total_win_amount', width: 120 },
     { title: '总盈亏', value: 'total_profit', width: 120 },
+    { title: '盈利', value: 'total_profit_rate', width: 120 },
 ]);
 
 const getRecords = async () => {
