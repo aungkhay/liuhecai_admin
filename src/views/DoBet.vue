@@ -280,6 +280,11 @@ const doBet = async (data) => {
         if (res && res.code == 1000) {
             cartStore.clearCarts();
             showCart.value = false;
+            toast.success('下注成功');
+        } else if (res.code == 1002) {
+            res.errors.forEach(err => {
+                toast.error(err.msg);
+            });
         } else {
             toast.error(res.message || '投注失败');
         }

@@ -189,6 +189,7 @@ const doBet = () => {
     console.log('bet data', data);
 
     emit('doBet', data);
+    remark.value = '';
 };
 
 onMounted(() => {
