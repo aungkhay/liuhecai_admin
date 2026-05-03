@@ -135,7 +135,8 @@
                 </v-col>
                 <v-col cols="12" sm="6" md="2">
                     <v-btn color="primary" variant="outlined" @click="fetchBetHistory()" class="mr-2"><v-icon>mdi-magnify</v-icon>搜索</v-btn>
-                    <v-btn color="grey-darken-2" variant="outlined" @click="clearFilters()"><v-icon>mdi-refresh</v-icon>重置</v-btn>
+                    <!-- <v-btn color="grey-darken-2" variant="outlined" @click="clearFilters()"><v-icon>mdi-refresh</v-icon>重置</v-btn> -->
+                    <v-btn color="success"  variant="outlined" :disabled="!filterObj.batch_number || bets.length === 0" :loading="isExporting" @click="exportTable"><v-icon>mdi-file-excel</v-icon> 导出</v-btn>
                 </v-col>
             </v-row>
         </v-card>
@@ -199,7 +200,10 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { BET_HISTORY, GET_BET_CATEGORIES } from '../js/api';
-import { formattedDate } from '../js/common';
+import { formattedDate, exportExcel } from '../js/common';
+import { getCurrentInstance } from 'vue'
+
+const { appContext } = getCurrentInstance()
 
 const loading = ref(false);
 const bets = ref([]);
@@ -238,6 +242,7 @@ const headers = ref([
     { title: '状态', value: 'is_calculated', minWidth: 100 },
     { title: '创建时间', value: 'createdAt', minWidth: 170 },
 ]);
+const isExporting = ref(false);
 
 const fetchBetHistory = async () => {
     loading.value = true;
@@ -287,6 +292,34 @@ const clearFilters = () => {
     page.value = 1;
     perPage.value = 10;
     fetchBetHistory();
+};
+
+const exportTable = async () => {
+    isExporting.value = true;
+    try {
+        const res = await BET_HISTORY(1, total.value || 1000, filterObj.value);
+        if (res.code === 1000) {
+            const exportData = res.data.bets.map(record => ({
+                '期号': record.batch_number,
+                '操作人员': record.user ? record.user.name : '-',
+                '类别': record.category.name + '~' + record.subCategory.name,
+                '编码': record.item_code,
+                '项目': record.item_name,
+                '赔率': record.odds,
+                '下注金额': Number(record.bet_amount),
+                '赢亏': record.is_win == 0 ? '未结算' : (record.is_win == 1 ? '客户亏' : (record.is_win == 2 ? '客户赢' : '和')),
+                '赢得金额': Number(record.win_amount),
+                '备注': record.remark,
+                '状态': record.is_calculated == 0 ? '未结算' : '已结算',
+                '创建时间': appContext.config.globalProperties.$filters.formatFullDate(record.createdAt),
+            }));
+            exportExcel(exportData, `投注记录_${filterObj.value.batch_number}期_${appContext.config.globalProperties.$filters.formatDate(new Date())}`);
+        }
+    } catch (error) {
+        console.error('导出失败:', error);
+    } finally {
+        isExporting.value = false;
+    }
 };
 
 onMounted(() => {
