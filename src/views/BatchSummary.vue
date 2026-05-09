@@ -16,7 +16,7 @@
                 <v-skeleton-loader type="table-row@3"/>
             </template>
             <template #item.total_profit="{ item }">
-                {{ item.total_bet_amount - item.total_win_amount }}
+                {{ (item.total_bet_amount - item.total_win_amount).toFixed(2) }}
             </template>
             <template #item.total_profit_rate="{ item }">
                 {{ ((item.total_bet_amount - item.total_win_amount) / item.total_bet_amount * 100).toFixed(2) }}%
