@@ -269,6 +269,11 @@ const addToCart = () => {
     }
     
     cartStore.setCarts([...cartStore.getCarts, ...data]);
+
+    // reset input empty
+    selectedItems.value.forEach(item => {
+        item.betAmount = '';
+    });
 };
 
 const doBet = async (data) => {
